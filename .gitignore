@@ -2,3 +2,9 @@
 /ONNX/convnet_onnx_example/data
 /PsyNeuLink/*.dat
 /PsyNeuLink/show_graph*
+/NeuroML/*.dat
+/NeuroML/*.gv
+/NeuroML/__pycache__
+/NeuroML/show_graph*
+/NeuroML/clean.sh
+/NeuroML/report*txt
