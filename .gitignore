@@ -1,2 +1,4 @@
 /ONNX/convnet_onnx_example/.ipynb_checkpoints
-/ONNX/convnet_onnx_example/data 
+/ONNX/convnet_onnx_example/data
+/PsyNeuLink/*.dat
+/PsyNeuLink/show_graph*
