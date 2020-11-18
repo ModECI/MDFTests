@@ -1,6 +1,6 @@
 import psyneulink as pnl
 
-comp = pnl.Composition(name='comp')
+comp = pnl.Composition(name='ABCD')
 
 A = pnl.TransferMechanism(function=pnl.Linear(slope=2.0, intercept=2.0), name='A')
 B = pnl.TransferMechanism(function=pnl.Logistic, name='B')
@@ -34,10 +34,10 @@ comp.show_graph()
 try:
     import matplotlib.pyplot as plt
 
-    def generate_time_array(node, context='comp', param='value'):
+    def generate_time_array(node, context='ABCD', param='value'):
         return [entry.time.trial for entry in getattr(node.parameters, param).log[context]]
 
-    def generate_value_array(node, context='comp', param='value'):
+    def generate_value_array(node, context='ABCD', param='value'):
         return [float(entry.value) for entry in getattr(node.parameters, param).log[context]]
 
     x_values = {node: generate_time_array(node) for node in comp.nodes}
