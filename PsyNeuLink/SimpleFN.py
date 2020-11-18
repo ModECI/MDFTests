@@ -21,12 +21,13 @@ fn = pnl.IntegratorMechanism(name='fn', function=fhn)
 comp = pnl.Composition(name='comp')
 comp.add_linear_processing_pathway([fn])
 
+print('Running the SimpleFN model...')
+
 comp.run(inputs={fn:0}, log=True, num_trials=num_trials)
 
 
-print('Finished running model')
+print('Finished running the SimpleFN model')
 
-print(comp.results)
 
 base_fname = __file__.replace('.py', '')
 with open(f'{base_fname}.json', 'w') as outfi:

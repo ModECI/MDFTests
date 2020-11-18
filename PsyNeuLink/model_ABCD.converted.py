@@ -20,7 +20,7 @@ ABCD.add_projection(projection=pnl.MappingProjection(name='MappingProjection fro
 ABCD.scheduler.add_condition(A, pnl.Always())
 ABCD.scheduler.add_condition(B, pnl.EveryNCalls(A, 1))
 ABCD.scheduler.add_condition(C, pnl.EveryNCalls(A, 1))
-ABCD.scheduler.add_condition(D, pnl.All(pnl.EveryNCalls(B, 1), pnl.EveryNCalls(C, 1)))
+ABCD.scheduler.add_condition(D, pnl.All(pnl.EveryNCalls(C, 1), pnl.EveryNCalls(B, 1)))
 
 ABCD.scheduler.termination_conds = {pnl.TimeScale.RUN: pnl.Never(), pnl.TimeScale.TRIAL: pnl.AllHaveRun()}
 comp.show_graph()
