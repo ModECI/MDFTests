@@ -91,6 +91,7 @@ class Edge(BaseWithId):
         super(Edge, self).__init__(**kwargs)
 
 
+
 if __name__ == "__main__":
 
     mod_graph0 = ModelGraph(id='Test', parameters={'speed':4})

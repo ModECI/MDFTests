@@ -87,7 +87,8 @@ try:
     import yaml
 
     with open(r'abc-mdf.yml', 'w') as file:
-        yaml.dump(json.loads(mdf_model.to_json()), file, default_flow_style=None, width=120)
+        yaml.dump(json.loads(mdf_model.to_json()), file,
+                  default_flow_style=None, width=120)
 except ImportError as ex:
     print("Couldn't load pyaml, skipping YAML output.")
 

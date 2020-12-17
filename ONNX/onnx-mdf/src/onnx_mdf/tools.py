@@ -1,4 +1,3 @@
-#%%
 import typing
 
 import onnx
@@ -238,8 +237,7 @@ def onnx_to_mdf(onnx_model: typing.Union[ModelProto, GraphProto],
         return mod_graph
 
 
-if __name__ == "__main__":
-
+def main():
     onnx_model = onnx.load("data/convnet.onnx")
     onnx.checker.check_model(onnx_model)
 
@@ -258,3 +256,7 @@ if __name__ == "__main__":
                       width=120)
     except ImportError as ex:
         print("Couldn't load pyaml, skipping YAML output.")
+
+
+if __name__ == "__main__":
+    main()
