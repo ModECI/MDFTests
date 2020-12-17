@@ -22,7 +22,7 @@ Two examples have been implemented. A simple ConvNet which can be run like this:
 
 ### Convnet
 
-[[/ONNX/onnx-mdf//examples/convnet.png]]
+![LeNet](examples/convnet.png)
 
 To run the converter on the above ONNX ConvNet model:
 
@@ -77,12 +77,13 @@ class ABC(torch.nn.Module):
 This implements a PyTorch model with three modules. The modules process the input sequentially, and the
 inner module has a loop construct. 
 
-[[/ONNX/onnx-mdf//examples/abc.png]]
+![ABC](examples/abc.png)
+
 
 It is exported to ONNX via a combination of tracing and scripting. The resulting ONNX model looks something
 like this:
 
-[[/ONNX/onnx-mdf/examples/abc_ir.png]]
+![ABC ONNX IR](examples/abc_ir.png)
 
 This ONNX IR representation can be converted to MDF. To run this example, execute this command:
 
