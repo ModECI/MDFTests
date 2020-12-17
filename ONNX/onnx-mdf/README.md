@@ -18,12 +18,14 @@ $ python -m pip install -e .
 
 ## Examples
 
-This is very experimental code. Only two examples have been tested currently. A simple ConvNet which can 
-be run like this:
+This is very experimental code. Only two examples have been tested currently. 
 
 ### Convnet
 
 ![LeNet](examples/convnet.png)
+
+The ONNX file `examples/convnet.onnx` is a simple LeNet ConvNet model. Code for its training 
+and ONNX generation is [here](https://github.com/ModECI/MDFTests/blob/onnx_mdf/ONNX/convnet_onnx_example/convnet_onnx_example.ipynb).
 
 To run the converter on the above ONNX ConvNet model:
 
@@ -31,12 +33,7 @@ To run the converter on the above ONNX ConvNet model:
 $ onnx-to-mdf examples/convnet.onnx
 ```
 
-You can see the converted model in JSON and YAML:
-
-```
-examples/convnet-mdf.json
-examples/convnet-mdf.yml
-```
+You can see the converted MDF models in [JSON](examples/convnet-mdf.json) and [YAML](examples/convnet-mdf.yml):
 
 ### ABC Sequential Model with Loop
 
@@ -76,7 +73,7 @@ class ABC(torch.nn.Module):
 ```
 
 This implements a PyTorch model with three modules. The modules process the input sequentially, and the
-inner module has a loop construct. 
+inner `B` module has a loop construct. 
 
 ![ABC](examples/abc.png)
 
@@ -86,10 +83,12 @@ like this:
 
 ![ABC ONNX IR](examples/abc_ir.png)
 
-This ONNX IR representation can be converted to MDF. To run this example, execute this command:
+This ONNX IR representation can be converted to MDF. To run this full example, execute this command:
 
 ```
 $ simple-abc-example
 ```
+
+You can see the converted MDF models in [JSON](examples/abc-mdf.json) and [YAML](examples/abc-mdf.yml):
 
 
