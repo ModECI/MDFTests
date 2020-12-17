@@ -237,26 +237,56 @@ def onnx_to_mdf(onnx_model: typing.Union[ModelProto, GraphProto],
         return mod_graph
 
 
-def main():
-    onnx_model = onnx.load("data/convnet.onnx")
+def convert_file(input_file: str):
+    """
+    Simple converter from ONNX to MDF. Takes in ONNX files and generates MDF JSON/YAML files.
+
+    Args:
+        input_file: The input file path to the ONNX file. Output files are generated in same
+            directory with -mdf.json and -mdf.yml extensions.
+
+    Returns:
+        MoneType
+    """
+
+    import os
+
+    out_filename = f"{os.path.splitext(input_file)[0]}-mdf"
+    onnx_model = onnx.load(input_file)
     onnx.checker.check_model(onnx_model)
-
     mdf_model = onnx_to_mdf(onnx_model)
+    mdf_model.to_json_file(f'{out_filename}.json')
 
-    mdf_model.to_json_file('examples/convnet-onnx_mdf.json')
-
-    # Lets convert to YAML
+    # Lets convert to YAML as well
     try:
         import json
         import yaml
-        with open(r'examples/convnet-mdf.yml', 'w') as file:
+        with open(f'{out_filename}.yml', 'w') as file:
             yaml.dump(json.loads(mdf_model.to_json()),
                       file,
                       default_flow_style=None,
                       width=120)
+        print(f"YAML version written to {out_filename}-mdf.yml")
     except ImportError as ex:
         print("Couldn't load pyaml, skipping YAML output.")
 
+
+def main():
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Simple converter from ONNX to MDF. '
+                                                 'Takes in ONNX files and generates MDF JSON/YAML')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file",
+                        type=str,
+                        help="An input ONNX file. "
+                             "Output files are generated in same directory "
+                             "with -mdf.json and -mdf.yml extensions.")
+
+    args = parser.parse_args()
+
+    convert_file(args.input_file)
 
 if __name__ == "__main__":
     main()

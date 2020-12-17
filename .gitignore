@@ -1,5 +1,6 @@
 
-/ONNX/onnx-mdf/examples/*.onnx
+/ONNX/onnx-mdf/examples/Loop_4_body.onnx
+/ONNX/onnx-mdf/examples/abc.onnx
 /ONNX/convnet_onnx_example/.ipynb_checkpoints
 /ONNX/convnet_onnx_example/data
 /PsyNeuLink/*.dat
