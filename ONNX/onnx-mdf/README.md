@@ -20,9 +20,9 @@ $ python -m pip install -e .
 
 This is very experimental code. Only two examples have been tested currently. 
 
-### Convnet
+### LeNet5 CNN Model
 
-![LeNet](examples/convnet.png)
+![LeNet5 ONNX IR](examples/convnet.png)
 
 The ONNX file `examples/convnet.onnx` is a simple LeNet ConvNet model. Code for its training 
 and ONNX generation is [here](https://github.com/ModECI/MDFTests/blob/onnx_mdf/ONNX/convnet_onnx_example/convnet_onnx_example.ipynb).
