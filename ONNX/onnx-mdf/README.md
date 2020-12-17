@@ -18,7 +18,8 @@ $ python -m pip install -e .
 
 ## Examples
 
-Two examples have been implemented. A simple ConvNet which can be run like this:
+This is very experimental code. Only two examples have been tested currently. A simple ConvNet which can 
+be run like this:
 
 ### Convnet
 
