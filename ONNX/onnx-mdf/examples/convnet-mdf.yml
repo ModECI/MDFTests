@@ -1,0 +1,178 @@
+ONNX Model:
+  graphs:
+  - torch-jit-export:
+      edges:
+      - Conv_0.11_Relu_1.11: {receiver: Relu_1, receiver_port: '11', sender: Conv_0, sender_port: '11'}
+      - Relu_1.12_MaxPool_2.12: {receiver: MaxPool_2, receiver_port: '12', sender: Relu_1, sender_port: '12'}
+      - MaxPool_2.13_Conv_3.13: {receiver: Conv_3, receiver_port: '13', sender: MaxPool_2, sender_port: '13'}
+      - Conv_3.14_Relu_4.14: {receiver: Relu_4, receiver_port: '14', sender: Conv_3, sender_port: '14'}
+      - Relu_4.15_MaxPool_5.15: {receiver: MaxPool_5, receiver_port: '15', sender: Relu_4, sender_port: '15'}
+      - MaxPool_5.16_Conv_6.16: {receiver: Conv_6, receiver_port: '16', sender: MaxPool_5, sender_port: '16'}
+      - Conv_6.17_Relu_7.17: {receiver: Relu_7, receiver_port: '17', sender: Conv_6, sender_port: '17'}
+      - Relu_7.18_Reshape_13.18: {receiver: Reshape_13, receiver_port: '18', sender: Relu_7, sender_port: '18'}
+      - Shape_8.19_Gather_10.19: {receiver: Gather_10, receiver_port: '19', sender: Shape_8, sender_port: '19'}
+      - Gather_10.21_Unsqueeze_11.21: {receiver: Unsqueeze_11, receiver_port: '21', sender: Gather_10, sender_port: '21'}
+      - Unsqueeze_11.23_Concat_12.23: {receiver: Concat_12, receiver_port: '23', sender: Unsqueeze_11, sender_port: '23'}
+      - Concat_12.25_Reshape_13.25: {receiver: Reshape_13, receiver_port: '25', sender: Concat_12, sender_port: '25'}
+      - Reshape_13.26_Gemm_14.26: {receiver: Gemm_14, receiver_port: '26', sender: Reshape_13, sender_port: '26'}
+      - Gemm_14.27_Relu_15.27: {receiver: Relu_15, receiver_port: '27', sender: Gemm_14, sender_port: '27'}
+      - Relu_15.28_Gemm_16.28: {receiver: Gemm_16, receiver_port: '28', sender: Relu_15, sender_port: '28'}
+      nodes:
+      - Conv_0:
+          functions:
+          - Conv_0: {function: Conv}
+          input_ports:
+          - input: {shape: '(''batch_size'', 1, 32, 32)'}
+          - convnet.0.weight: {shape: '(16, 1, 5, 5)'}
+          - convnet.0.bias: {shape: '(16,)'}
+          output_ports:
+          - '11': {value: Conv_0}
+          parameters:
+            dilations: [1, 1]
+            group: 1
+            kernel_shape: [5, 5]
+            pads: [0, 0, 0, 0]
+            strides: [1, 1]
+      - Relu_1:
+          functions:
+          - Relu_1: {function: Relu}
+          input_ports:
+          - '11': {shape: '(''batch_size'', 16, 28, 28)'}
+          output_ports:
+          - '12': {value: Relu_1}
+      - MaxPool_2:
+          functions:
+          - MaxPool_2: {function: MaxPool}
+          input_ports:
+          - '12': {shape: '(''batch_size'', 16, 28, 28)'}
+          output_ports:
+          - '13': {value: MaxPool_2}
+          parameters:
+            ceil_mode: 0
+            kernel_shape: [2, 2]
+            pads: [0, 0, 0, 0]
+            strides: [2, 2]
+      - Conv_3:
+          functions:
+          - Conv_3: {function: Conv}
+          input_ports:
+          - '13': {shape: '(''batch_size'', 16, 14, 14)'}
+          - convnet.3.weight: {shape: '(81, 16, 5, 5)'}
+          - convnet.3.bias: {shape: '(81,)'}
+          output_ports:
+          - '14': {value: Conv_3}
+          parameters:
+            dilations: [1, 1]
+            group: 1
+            kernel_shape: [5, 5]
+            pads: [0, 0, 0, 0]
+            strides: [1, 1]
+      - Relu_4:
+          functions:
+          - Relu_4: {function: Relu}
+          input_ports:
+          - '14': {shape: '(''batch_size'', 81, 10, 10)'}
+          output_ports:
+          - '15': {value: Relu_4}
+      - MaxPool_5:
+          functions:
+          - MaxPool_5: {function: MaxPool}
+          input_ports:
+          - '15': {shape: '(''batch_size'', 81, 10, 10)'}
+          output_ports:
+          - '16': {value: MaxPool_5}
+          parameters:
+            ceil_mode: 0
+            kernel_shape: [2, 2]
+            pads: [0, 0, 0, 0]
+            strides: [2, 2]
+      - Conv_6:
+          functions:
+          - Conv_6: {function: Conv}
+          input_ports:
+          - '16': {shape: '(''batch_size'', 81, 5, 5)'}
+          - convnet.6.weight: {shape: '(625, 81, 5, 5)'}
+          - convnet.6.bias: {shape: '(625,)'}
+          output_ports:
+          - '17': {value: Conv_6}
+          parameters:
+            dilations: [1, 1]
+            group: 1
+            kernel_shape: [5, 5]
+            pads: [0, 0, 0, 0]
+            strides: [1, 1]
+      - Relu_7:
+          functions:
+          - Relu_7: {function: Relu}
+          input_ports:
+          - '17': {shape: '(''batch_size'', 625, 1, 1)'}
+          output_ports:
+          - '18': {value: Relu_7}
+      - Shape_8:
+          functions:
+          - Shape_8: {function: Shape}
+          input_ports:
+          - input: {shape: '(''batch_size'', 1, 32, 32)'}
+          output_ports:
+          - '19': {value: Shape_8}
+      - Gather_10:
+          functions:
+          - Gather_10: {function: Gather}
+          input_ports:
+          - '19': {shape: '(4,)'}
+          output_ports:
+          - '21': {value: Gather_10}
+          parameters: {axis: 0, indices: 0}
+      - Unsqueeze_11:
+          functions:
+          - Unsqueeze_11: {function: Unsqueeze}
+          input_ports:
+          - '21': {shape: '(1,)'}
+          output_ports:
+          - '23': {value: Unsqueeze_11}
+          parameters:
+            axes: [0]
+      - Concat_12:
+          functions:
+          - Concat_12: {function: Concat}
+          input_ports:
+          - '23': {shape: '(1,)'}
+          - '30': {shape: '(1,)'}
+          output_ports:
+          - '25': {value: Concat_12}
+          parameters: {axis: 0}
+      - Reshape_13:
+          functions:
+          - Reshape_13: {function: Reshape}
+          input_ports:
+          - '18': {shape: '(''batch_size'', 625, 1, 1)'}
+          - '25': {shape: '(2,)'}
+          output_ports:
+          - '26': {value: Reshape_13}
+      - Gemm_14:
+          functions:
+          - Gemm_14: {function: Gemm}
+          input_ports:
+          - '26': {shape: '(1,)'}
+          - fc.0.weight: {shape: '(84, 625)'}
+          - fc.0.bias: {shape: '(84,)'}
+          output_ports:
+          - '27': {value: Gemm_14}
+          parameters: {alpha: 1.0, beta: 1.0, transB: 1}
+      - Relu_15:
+          functions:
+          - Relu_15: {function: Relu}
+          input_ports:
+          - '27': {shape: '(1,)'}
+          output_ports:
+          - '28': {value: Relu_15}
+      - Gemm_16:
+          functions:
+          - Gemm_16: {function: Gemm}
+          input_ports:
+          - '28': {shape: '(1,)'}
+          - fc.2.weight: {shape: '(10, 84)'}
+          - fc.2.bias: {shape: '(10,)'}
+          output_ports:
+          - output: {value: Gemm_16}
+          parameters: {alpha: 1.0, beta: 1.0, transB: 1}
