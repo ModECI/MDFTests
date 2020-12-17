@@ -1,4 +1,9 @@
-
+"""
+This file does three things:
+    - It implements a simple PyTorch model.
+    - Exports in to ONNX using a combination of tracing and scripting
+    - Converts it to MDF
+"""
 import torch
 import onnx
 
@@ -86,7 +91,7 @@ try:
     import json
     import yaml
 
-    with open(r'abc-mdf.yml', 'w') as file:
+    with open(r'examples/abc-mdf.yml', 'w') as file:
         yaml.dump(json.loads(mdf_model.to_json()), file,
                   default_flow_style=None, width=120)
 except ImportError as ex:
