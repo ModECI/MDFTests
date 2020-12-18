@@ -2,7 +2,7 @@ import typing
 
 import onnx
 
-from onnx import ModelProto, TensorProto, GraphProto, numpy_helper, shape_inference
+from onnx import ModelProto, TensorProto, GraphProto, AttributeProto, numpy_helper, shape_inference
 from onnx.defs import get_schema
 
 from onnx_mdf.mdf import *
@@ -82,7 +82,10 @@ def onnx_node_to_mdf(node: typing.Union[onnx.NodeProto, onnx.ValueInfoProto],
                 # Get the name of the formal argument that corresponds to this input.
                 # We need to go to the schema for this.
                 # FIXME: We need to make sure we are going the correct schema here ... yuck!
-                arg_name = get_schema(node.op_type).inputs[inp_i].name
+                try:
+                    arg_name = get_schema(node.op_type).inputs[inp_i].name
+                except IndexError:
+                    arg_name = f'param_{inp}'
 
                 params_dict[arg_name] = onnx_initializer[inp]['value']
             else:
@@ -151,7 +154,10 @@ def onnx_to_mdf(onnx_model: typing.Union[ModelProto, GraphProto],
 
         # Do shape inference on the model so we can get shapes of intermediate outputs
         # FIXME: This function has side-effects, it probably shouldn't
-        onnx_model = shape_inference.infer_shapes(onnx_model)
+        try:
+            onnx_model = shape_inference.infer_shapes(onnx_model)
+        except RuntimeError:
+            pass
 
         graph = onnx_model.graph
 
@@ -212,10 +218,10 @@ def onnx_to_mdf(onnx_model: typing.Union[ModelProto, GraphProto],
 
                 # Find all node input ports with this outport id
                 # FIXME: This is slow for big graphs with lots of edges. Best to build a data structure for this.
-                receiver = [(m, m.input_ports[ip_num])
+                receiver = [(m, ip)
                             for n, m in node_pairs
-                            for ip_num, ip in enumerate(n.input)
-                            if out_port_id == ip]
+                            for ip in m.input_ports
+                            if out_port_id == ip.id]
 
                 # Make an edge for each receiver of this output port
                 for receiver_node, receiver_port in receiver:
@@ -235,6 +241,38 @@ def onnx_to_mdf(onnx_model: typing.Union[ModelProto, GraphProto],
 
     else:
         return mod_graph
+
+
+def find_subgraphs(graph: onnx.GraphProto, graph_dict: typing.Dict[str, GraphProto] = None) -> typing.Dict[
+    str, GraphProto]:
+    """
+    Recurse through an ONNX graph and find all subgraphs.
+
+    Args:
+        graph: The graph to search.
+        graph_list: Insert graphs we find into this dict. Use the parent node name as a key.
+            If None, intitialize to empty dict.
+
+    Returns:
+        All the subgraphs in the for the graph.
+    """
+
+    if graph_dict is None:
+        graph_dict = {}
+
+    for node in graph.node:
+        for ai, attr in enumerate(node.attribute):
+            if attr.type == AttributeProto.GRAPH:
+                subgraph = onnx.helper.get_attribute_value(attr)
+                graph_dict[f"{node.name}_attr{ai}"] = subgraph
+                graph_dict = find_subgraphs(subgraph, graph_dict)
+            elif attr.type == AttributeProto.GRAPHS:
+                subgraphs = onnx.helper.get_attribute_value(attr)
+                for gi, subgraph in enumerate(subgraphs):
+                    graph_dict[f"{node.name}_attr{ai}_g{gi}"] = subgraph
+                    graph_dict = find_subgraphs(subgraph, graph_dict)
+
+    return graph_dict
 
 
 def convert_file(input_file: str):
@@ -266,7 +304,7 @@ def convert_file(input_file: str):
                       file,
                       default_flow_style=None,
                       width=120)
-        print(f"YAML version written to {out_filename}-mdf.yml")
+        print(f"YAML version written to {out_filename}.yml")
     except ImportError as ex:
         print("Couldn't load pyaml, skipping YAML output.")
 

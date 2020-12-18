@@ -1,0 +1,330 @@
+ONNX Model:
+  graphs:
+  - torch-jit-export:
+      edges:
+      - Shape_3.12_ConstantOfShape_4.12: {receiver: ConstantOfShape_4, receiver_port: '12', sender: Shape_3, sender_port: '12'}
+      - ConstantOfShape_4.13_Loop_10.13: {receiver: Loop_10, receiver_port: '13', sender: ConstantOfShape_4, sender_port: '13'}
+      - Shape_5.14_ConstantOfShape_6.14: {receiver: ConstantOfShape_6, receiver_port: '14', sender: Shape_5, sender_port: '14'}
+      - ConstantOfShape_6.15_Loop_10.15: {receiver: Loop_10, receiver_port: '15', sender: ConstantOfShape_6, sender_port: '15'}
+      - Shape_7.16_ConstantOfShape_8.16: {receiver: ConstantOfShape_8, receiver_port: '16', sender: Shape_7, sender_port: '16'}
+      - ConstantOfShape_8.17_Loop_10.17: {receiver: Loop_10, receiver_port: '17', sender: ConstantOfShape_8, sender_port: '17'}
+      - Cast_9.18_Loop_10.18: {receiver: Loop_10, receiver_port: '18', sender: Cast_9, sender_port: '18'}
+      nodes:
+      - Shape_3:
+          functions:
+          - Shape_3: {function: Shape}
+          input_ports:
+          - input: {shape: '(1, 1)'}
+          output_ports:
+          - '12': {value: Shape_3}
+      - ConstantOfShape_4:
+          functions:
+          - ConstantOfShape_4: {function: ConstantOfShape}
+          input_ports:
+          - '12': {shape: ''}
+          output_ports:
+          - '13': {value: ConstantOfShape_4}
+          parameters:
+            value: [0.0]
+      - Shape_5:
+          functions:
+          - Shape_5: {function: Shape}
+          input_ports:
+          - input: {shape: '(1, 1)'}
+          output_ports:
+          - '14': {value: Shape_5}
+      - ConstantOfShape_6:
+          functions:
+          - ConstantOfShape_6: {function: ConstantOfShape}
+          input_ports:
+          - '14': {shape: ''}
+          output_ports:
+          - '15': {value: ConstantOfShape_6}
+          parameters:
+            value: [0.0]
+      - Shape_7:
+          functions:
+          - Shape_7: {function: Shape}
+          input_ports:
+          - input: {shape: '(1, 1)'}
+          output_ports:
+          - '16': {value: Shape_7}
+      - ConstantOfShape_8:
+          functions:
+          - ConstantOfShape_8: {function: ConstantOfShape}
+          input_ports:
+          - '16': {shape: ''}
+          output_ports:
+          - '17': {value: ConstantOfShape_8}
+          parameters:
+            value: [0.0]
+      - Cast_9:
+          functions:
+          - Cast_9: {function: Cast}
+          output_ports:
+          - '18': {value: Cast_9}
+          parameters: {input: 1, to: 9}
+      - Loop_10:
+          functions:
+          - Loop_10: {function: Loop}
+          input_ports:
+          - '18': {shape: ''}
+          - '15': {shape: ''}
+          - '17': {shape: ''}
+          - '13': {shape: ''}
+          output_ports:
+          - '19': {value: Loop_10}
+          - '20': {value: Loop_10}
+          - '21': {value: Loop_10}
+          - '22': {value: Loop_10}
+          - '23': {value: Loop_10}
+          parameters:
+            M: 10
+            body:
+              torch-jit-export1:
+                edges:
+                - Equal_12.32_If_13.32: {receiver: If_13, receiver_port: '32', sender: Equal_12, sender_port: '32'}
+                - If_13.33_Mul_19.33: {receiver: Mul_19, receiver_port: '33', sender: If_13, sender_port: '33'}
+                - Mul_19.40_Add_20.40: {receiver: Add_20, receiver_port: '40', sender: Mul_19, sender_port: '40'}
+                - Add_22.43_Div_24.43: {receiver: Div_24, receiver_port: '43', sender: Add_22, sender_port: '43'}
+                - Add_22.43_Sub_27.43: {receiver: Sub_27, receiver_port: '43', sender: Add_22, sender_port: '43'}
+                - Add_22.43_Div_35.43: {receiver: Div_35, receiver_port: '43', sender: Add_22, sender_port: '43'}
+                - Add_22.43_Sub_38.43: {receiver: Sub_38, receiver_port: '43', sender: Add_22, sender_port: '43'}
+                - Div_24.45_Mul_26.45: {receiver: Mul_26, receiver_port: '45', sender: Div_24, sender_port: '45'}
+                - Mul_26.47_Sub_27.47: {receiver: Sub_27, receiver_port: '47', sender: Mul_26, sender_port: '47'}
+                - Sub_27.48_Equal_29.48: {receiver: Equal_29, receiver_port: '48', sender: Sub_27, sender_port: '48'}
+                - Equal_29.50_If_30.50: {receiver: If_30, receiver_port: '50', sender: Equal_29, sender_port: '50'}
+                - Div_35.56_Mul_37.56: {receiver: Mul_37, receiver_port: '56', sender: Div_35, sender_port: '56'}
+                - Mul_37.58_Sub_38.58: {receiver: Sub_38, receiver_port: '58', sender: Mul_37, sender_port: '58'}
+                - Sub_38.59_Equal_40.59: {receiver: Equal_40, receiver_port: '59', sender: Sub_38, sender_port: '59'}
+                - Equal_40.61_If_41.61: {receiver: If_41, receiver_port: '61', sender: Equal_40, sender_port: '61'}
+                nodes:
+                - Equal_12:
+                    functions:
+                    - Equal_12: {function: Equal}
+                    input_ports:
+                    - num_A_calls.10: {shape: '(1,)'}
+                    output_ports:
+                    - '32': {value: Equal_12}
+                    parameters: {B: 0}
+                - If_13:
+                    functions:
+                    - If_13: {function: If}
+                    input_ports:
+                    - '32': {shape: ''}
+                    output_ports:
+                    - '33': {value: If_13}
+                    - '34': {value: If_13}
+                    parameters:
+                      else_branch:
+                        torch-jit-export3:
+                          nodes:
+                          - Identity_18:
+                              functions:
+                              - Identity_18: {function: Identity}
+                              input_ports:
+                              - a.10: {shape: '(1,)'}
+                              output_ports:
+                              - a.9: {value: Identity_18}
+                      then_branch:
+                        torch-jit-export2:
+                          edges:
+                          - Mul_14.35_Add_15.35: {receiver: Add_15, receiver_port: '35', sender: Mul_14, sender_port: '35'}
+                          nodes:
+                          - Mul_14:
+                              functions:
+                              - Mul_14: {function: Mul}
+                              input_ports:
+                              - '8': {shape: '(1, 1)'}
+                              - input: {shape: '(1, 1)'}
+                              output_ports:
+                              - '35': {value: Mul_14}
+                          - Add_15:
+                              functions:
+                              - Add_15: {function: Add}
+                              input_ports:
+                              - '35': {shape: ''}
+                              - '7': {shape: '(1, 1)'}
+                              output_ports:
+                              - '36': {value: Add_15}
+                          - Add_17:
+                              functions:
+                              - Add_17: {function: Add}
+                              input_ports:
+                              - num_A_calls.10: {shape: '(1,)'}
+                              output_ports:
+                              - '38': {value: Add_17}
+                              parameters: {B: 1}
+                - Mul_19:
+                    functions:
+                    - Mul_19: {function: Mul}
+                    input_ports:
+                    - '6': {shape: '(1, 1)'}
+                    - '33': {shape: ''}
+                    output_ports:
+                    - '40': {value: Mul_19}
+                - Add_20:
+                    functions:
+                    - Add_20: {function: Add}
+                    input_ports:
+                    - '40': {shape: ''}
+                    - '5': {shape: '(1, 1)'}
+                    output_ports:
+                    - '41': {value: Add_20}
+                - Add_22:
+                    functions:
+                    - Add_22: {function: Add}
+                    input_ports:
+                    - num_B_calls.6: {shape: '(1,)'}
+                    output_ports:
+                    - '43': {value: Add_22}
+                    parameters: {B: 1}
+                - Div_24:
+                    functions:
+                    - Div_24: {function: Div}
+                    input_ports:
+                    - '43': {shape: ''}
+                    output_ports:
+                    - '45': {value: Div_24}
+                    parameters: {B: 5}
+                - Mul_26:
+                    functions:
+                    - Mul_26: {function: Mul}
+                    input_ports:
+                    - '45': {shape: ''}
+                    output_ports:
+                    - '47': {value: Mul_26}
+                    parameters: {B: 5}
+                - Sub_27:
+                    functions:
+                    - Sub_27: {function: Sub}
+                    input_ports:
+                    - '43': {shape: ''}
+                    - '47': {shape: ''}
+                    output_ports:
+                    - '48': {value: Sub_27}
+                - Equal_29:
+                    functions:
+                    - Equal_29: {function: Equal}
+                    input_ports:
+                    - '48': {shape: ''}
+                    output_ports:
+                    - '50': {value: Equal_29}
+                    parameters: {B: 0}
+                - If_30:
+                    functions:
+                    - If_30: {function: If}
+                    input_ports:
+                    - '50': {shape: ''}
+                    output_ports:
+                    - '51': {value: If_30}
+                    parameters:
+                      else_branch:
+                        torch-jit-export5:
+                          nodes:
+                          - Identity_33:
+                              functions:
+                              - Identity_33: {function: Identity}
+                              input_ports:
+                              - c.10: {shape: '(1,)'}
+                              output_ports:
+                              - c.9: {value: Identity_33}
+                      then_branch:
+                        torch-jit-export4:
+                          edges:
+                          - Mul_31.52_Add_32.52: {receiver: Add_32, receiver_port: '52', sender: Mul_31, sender_port: '52'}
+                          nodes:
+                          - Mul_31:
+                              functions:
+                              - Mul_31: {function: Mul}
+                              input_ports:
+                              - '4': {shape: '(1, 1)'}
+                              - '41': {shape: ''}
+                              output_ports:
+                              - '52': {value: Mul_31}
+                          - Add_32:
+                              functions:
+                              - Add_32: {function: Add}
+                              input_ports:
+                              - '52': {shape: ''}
+                              - '3': {shape: '(1, 1)'}
+                              output_ports:
+                              - '53': {value: Add_32}
+                - Div_35:
+                    functions:
+                    - Div_35: {function: Div}
+                    input_ports:
+                    - '43': {shape: ''}
+                    output_ports:
+                    - '56': {value: Div_35}
+                    parameters: {B: 10}
+                - Mul_37:
+                    functions:
+                    - Mul_37: {function: Mul}
+                    input_ports:
+                    - '56': {shape: ''}
+                    output_ports:
+                    - '58': {value: Mul_37}
+                    parameters: {B: 10}
+                - Sub_38:
+                    functions:
+                    - Sub_38: {function: Sub}
+                    input_ports:
+                    - '43': {shape: ''}
+                    - '58': {shape: ''}
+                    output_ports:
+                    - '59': {value: Sub_38}
+                - Equal_40:
+                    functions:
+                    - Equal_40: {function: Equal}
+                    input_ports:
+                    - '59': {shape: ''}
+                    output_ports:
+                    - '61': {value: Equal_40}
+                    parameters: {B: 0}
+                - If_41:
+                    functions:
+                    - If_41: {function: If}
+                    input_ports:
+                    - '61': {shape: ''}
+                    output_ports:
+                    - '62': {value: If_41}
+                    parameters:
+                      else_branch:
+                        torch-jit-export7:
+                          nodes:
+                          - Identity_44:
+                              functions:
+                              - Identity_44: {function: Identity}
+                              input_ports:
+                              - d.10: {shape: '(1,)'}
+                              output_ports:
+                              - d.9: {value: Identity_44}
+                      then_branch:
+                        torch-jit-export6:
+                          edges:
+                          - Mul_42.63_Add_43.63: {receiver: Add_43, receiver_port: '63', sender: Mul_42, sender_port: '63'}
+                          nodes:
+                          - Mul_42:
+                              functions:
+                              - Mul_42: {function: Mul}
+                              input_ports:
+                              - '2': {shape: '(1, 1)'}
+                              - '41': {shape: ''}
+                              output_ports:
+                              - '63': {value: Mul_42}
+                          - Add_43:
+                              functions:
+                              - Add_43: {function: Add}
+                              input_ports:
+                              - '63': {shape: ''}
+                              - '1': {shape: '(1, 1)'}
+                              output_ports:
+                              - '64': {value: Add_43}
+                - Cast_45:
+                    functions:
+                    - Cast_45: {function: Cast}
+                    output_ports:
+                    - '66': {value: Cast_45}
+                    parameters: {input: 1, to: 9}
+            param_10: 0
