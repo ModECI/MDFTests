@@ -16,7 +16,10 @@ comp.scheduler.add_condition_set({
 comp.run(inputs={A: 1})
 
 # A, B, B, B, B, B, C
-print(comp.scheduler.execution_list[comp.default_execution_id])
+print([
+    {node.name for node in time_step}
+    for time_step in comp.scheduler.execution_list[comp.default_execution_id]
+])
 
 with open(__file__.replace('.py', '.json'), 'w') as f:
     f.write(comp.json_summary + '\n')
