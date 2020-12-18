@@ -91,4 +91,77 @@ $ simple-abc-example
 
 You can see the converted MDF models in [JSON](examples/abc-mdf.json) and [YAML](examples/abc-mdf.yml):
 
+### ABCD Branching Conditional Model
 
+This is an example of a PyTorch model that have four components (A, B, C, D). We loop over the whole
+model 10 iterations. A is executed only on the first iteration, B is executed every iteration, C is
+executed every 5 times B is executed, and D is executed every 10 times B is executed. A, B, C, and D are
+each simple stateless linear functions. This type of conditional execution specification is common in PsyNeuLink. 
+The PyTorch code for the model is fairly straightforward:
+
+```python 
+class Linear(torch.nn.Module):
+    def __init__(self, slope=1.0, intercept=0.0):
+        super(Linear, self).__init__()
+        self.slope = slope
+        self.intercept = intercept
+
+    def forward(self, x):
+        return self.slope*x + self.intercept
+
+
+class ABCD(torch.nn.Module):
+    def __init__(self, A, B, C, D):
+        super(ABCD, self).__init__()
+        self.A = A
+        self.B = B
+        self.C = C
+        self.D = D
+
+    def forward(self, x):
+
+        # Since we are implementing conditions that reference the number of calls
+        # to A and B, we need to keep track of this.
+        num_A_calls = 0
+        num_B_calls = 0
+
+        # We need to initialize outputs, torchscript jit complains if c and d
+        # are not defined in the FALSE branches of our conditionals.
+        a = torch.zeros_like(x)
+        b = torch.zeros_like(x)
+        c = torch.zeros_like(x)
+        d = torch.zeros_like(x)
+
+        for i in range(10):
+
+            # A: pnl.AtNCalls(A, 0),
+            if num_A_calls == 0:
+                a = self.A(x)
+                num_A_calls = num_A_calls + 1
+
+            # B: pnl.Always()
+            b = self.B(a)
+            num_B_calls = num_B_calls + 1
+
+            # C: pnl.EveryNCalls(B, 5),
+            if num_B_calls % 5 == 0:
+                c = self.C(b)
+
+            # D: pnl.EveryNCalls(B, 10)
+            if num_B_calls % 10 == 0:
+                d = self.D(b)
+
+        return c, d
+```
+
+The ONNX IR representation of this model is shown below:
+
+![ABCD ONNX IR](examples/abcd_ir.png)
+
+To run this example, execute the following command:
+
+```
+$ simple-abcd-example
+```
+
+You can see the converted MDF models in [JSON](examples/abcd/abc-mdf.json) and [YAML](examples/abcd/abcd-mdf.yml):
