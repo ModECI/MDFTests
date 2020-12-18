@@ -156,7 +156,7 @@ class ABCD(torch.nn.Module):
 
 The ONNX IR representation of this model is shown below:
 
-![ABCD ONNX IR](examples/abcd_ir.png)
+![ABCD ONNX IR](examples/abcd/abcd_ir.svg)
 
 To run this example, execute the following command:
 
