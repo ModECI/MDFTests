@@ -13,7 +13,7 @@ comp.scheduler.add_condition_set({
     A: pnl.AtNCalls(A, 0),
     B: pnl.Always(),
     C: pnl.EveryNCalls(B, 5),
-    D: pnl.EveryNCalls(B, 10),
+    D: pnl.EveryNCalls(C, 2),
 })
 
 comp.run(inputs={A: 1})
