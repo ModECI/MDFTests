@@ -1,6 +1,57 @@
 {
     "graphs": [
         {
+            "conditions": {
+                "node_specific": {
+                    "A": {
+                        "args": [
+                            "A",
+                            0
+                        ],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "AtNCalls"
+                    },
+                    "B": {
+                        "args": [],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "Always"
+                    },
+                    "C": {
+                        "args": [
+                            "B",
+                            5
+                        ],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "EveryNCalls"
+                    },
+                    "D": {
+                        "args": [
+                            "B",
+                            10
+                        ],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "EveryNCalls"
+                    }
+                },
+                "termination": {
+                    "run": {
+                        "args": [],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "Never"
+                    },
+                    "trial": {
+                        "args": [],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "AllHaveRun"
+                    }
+                }
+            },
             "controller": null,
             "edges": {
                 "MappingProjection from A[RESULT] to B[InputPort-0]": {
@@ -2168,61 +2219,6 @@
                     ],
                     "required_node_roles": [],
                     "results": [],
-                    "schedulers": {
-                        "ContextFlags.PROCESSING": {
-                            "conditions": {
-                                "node": {
-                                    "A": {
-                                        "args": [
-                                            "A",
-                                            0
-                                        ],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "AtNCalls"
-                                    },
-                                    "B": {
-                                        "args": [],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "Always"
-                                    },
-                                    "C": {
-                                        "args": [
-                                            "B",
-                                            5
-                                        ],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "EveryNCalls"
-                                    },
-                                    "D": {
-                                        "args": [
-                                            "B",
-                                            10
-                                        ],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "EveryNCalls"
-                                    }
-                                },
-                                "termination": {
-                                    "TimeScale.RUN": {
-                                        "args": [],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "Never"
-                                    },
-                                    "TimeScale.TRIAL": {
-                                        "args": [],
-                                        "function": null,
-                                        "kwargs": {},
-                                        "type": "AllHaveRun"
-                                    }
-                                }
-                            }
-                        }
-                    },
                     "simulation_results": [],
                     "variable": [
                         0
