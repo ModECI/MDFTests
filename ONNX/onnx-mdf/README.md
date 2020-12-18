@@ -154,7 +154,9 @@ class ABCD(torch.nn.Module):
         return c, d
 ```
 
-The ONNX IR representation of this model is shown below:
+The ONNX IR representation of this model is shown below. The small computation sub-graphs 
+contained in the if and else body attributes are not shown. These are either a simple multiplication and addition or
+an identity.
 
 ![ABCD ONNX IR](examples/abcd/abcd_ir.svg)
 
