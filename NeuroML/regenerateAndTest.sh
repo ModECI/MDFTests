@@ -1,4 +1,11 @@
-set -e
+#!/bin/bash
+set -ex
+
+run_gui_examples=true
+
+if [[ ($# -eq 1) && ($1 == '-nogui') ]]; then
+    run_gui_examples=false
+fi
 
 ####  Generate and run jNeuroML version of the network from NeuroMLlite definition
 python ABCD.py -jnml
@@ -13,8 +20,11 @@ python test_bids_import.py
 ####  Generate a graph depicting the structure & *dynamics* of the network from the LEMS description
 pynml LEMS_SimABCD.xml -lems-graph
 
-####  Generate a graph depicting the structure of network from NeuroMLlite
-python ABCD.py -graph2
+if [ "$run_gui_examples" == true ]; then
+    ####  Generate a graph depicting the structure of network from NeuroMLlite
+    python ABCD.py -graph2
+
+fi
 
 
 ####  Generate and run jNeuroML version of the network from NeuroMLlite definition

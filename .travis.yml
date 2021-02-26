@@ -1,5 +1,10 @@
 language: python
 
+addons:
+  apt:
+    packages:
+    - graphviz
+
 python:
   - "3.8"
   - "3.9"
@@ -17,13 +22,16 @@ install:
   - pip install pyneuroml
   - pynml -h
 
+  # Install PsyNeuLink (also installs pytorch)
+  - pip install psyneulink
+
 
 
 script:
   #  Run NeuroML tests
 
   - cd NeuroML
-  - ./regenerateAndTest.sh
+  - ./regenerateAndTest.sh -nogui
 
   # List currently installed Python packages
   - pip freeze
