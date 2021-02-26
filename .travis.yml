@@ -13,13 +13,17 @@ install:
   - python setup.py install
   - cd -
 
-  # Check pyNeuroML installed
+  # Install pyNeuroML
+  - pip install pyneuroml
   - pynml -h
 
 
 
 script:
-  ###       Run main tests
+  #  Run NeuroML tests
 
-  #- ./test_all.sh
-  - pip freeze  # List currently installed Python packages
+  - cd NeuroML
+  - ./regenerateAndTest.sh
+
+  # List currently installed Python packages
+  - pip freeze
