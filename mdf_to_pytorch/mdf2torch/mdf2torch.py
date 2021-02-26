@@ -16,7 +16,6 @@ def _generate_scripts_from_json(model_input):
 
     # Get all top-level (non-nested) graphs
     graphs = get_graphs(mdf_dict)
-
     scripts = {}
 
     for graph_name, graph_dict in graphs.items():
@@ -33,7 +32,8 @@ def _generate_scripts_from_json(model_input):
 
         # Get conditions, for now only consider node-specific
         conditions = get_elements(graph_dict, "conditions")
-        conditions = conditions["node_specific"]
+        if conditions:
+            conditions = conditions["node_specific"]
 
         # Construct simple dependency graph. If there are no conditions,
         # this will solely specify a model. If conditions, augment graph.

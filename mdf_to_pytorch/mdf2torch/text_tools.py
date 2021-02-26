@@ -1,33 +1,41 @@
+import torch
 import torch.nn as nn
 from collections import defaultdict
-from inspect import getmembers, isclass, signature
+from inspect import getmembers, signature, getsource
 
-from . import auxiliary_functions as af
-from .mapping import function_map, argument_map
+from .function import udfs as udf
+from .function import mod_torch_builtins as torch_builtins
+from .function.alias import nn_module_map, nn_module_argument_map
 from .mdf2torch_errors import TorchNameError, TorchArgumentError
 
 def generate_constructor_call(function, params):
     """
     Generate the constructor for a given torch module
     """
+
     # Map the name of the function to torch.nn or another lib if specified
-    function_name = list(function.keys())[0]  # Only handle one at a time
+    function_name = next(iter(function.keys()))
+    function_type = function[function_name]["function"]  # Only handle one at a time
     function_dict = function[function_name]
 
-    aux_func_names = set([item[0] for item in getmembers(af, isclass)])
+    print(function_type)
 
-    mdf_name = function_dict["function"].lower()
-
-    if mdf_name in function_map:
-        torch_module = True
-        torch_function_name = function_map[mdf_name]
+    # Check if function name maps to a nn.Module module
+    if function_type in nn_module_map:
+        nn_module = True
+        torch_function_name = nn_module_map[function_type]
         torch_function = getattr(nn, torch_function_name)
 
-    # Check if the name is instead in auxiliary functions
-    elif mdf_name in aux_func_names:
-        torch_module = False
-        torch_function_name = mdf_name
-        torch_function = getattr(nn, torch_function_name)
+    # Check if the name is instead in udfs
+    elif function_type in udf.__all__:
+        nn_module = False
+        torch_function_name = function_name
+        torch_function = getattr(udf, torch_function_name)
+
+    elif function_type in torch_builtins.__all__:
+        nn_module = False
+        torch_function_name = function_name
+        torch_function = getattr(torch_builtins, torch_function_name)
 
     else:
         raise TorchNameError(function_name)
@@ -35,24 +43,35 @@ def generate_constructor_call(function, params):
     # Using a proper function name, find its constructor arguments
     constructor_args = signature(torch_function.__init__).parameters
 
+    ca = {}
+
+    for arg in constructor_args:
+        if str(arg) not in ['self', "args", "kwargs"]:
+            typ = str(constructor_args[arg]).split(":")[-1]
+            if "=" in typ:
+                typ = typ.split("=")[0]
+            ca[arg] = (typ, constructor_args[arg])
+
+
     args = []
     kwargs = []
 
     satisfied_args = {}
 
-    for argname, argspec in constructor_args.items():
-        if argname=='self':
-            pass
+    for argname, argspec in ca.items():
+
+        typ, arg_desc = argspec
+
+        if "=" in str(arg_desc):
+            default = str(arg_desc).split("=")[-1]
+            kwargs.append((typ,argname))
+            satisfied_args[argname] = default
         else:
-            if "=" in str(argspec):
-                default = str(argspec).split("=")[-1]
-                kwargs.append(argname)
-                satisfied_args[argname] = default
-            else:
-                args.append(argname)
+            args.append((typ,argname))
 
     # These will be the possible inputs to the constructor
     potential_args = {}
+
     if "args" in function_dict:
         potential_args = function_dict["args"]
     potential_args = {**potential_args, **params}
@@ -62,19 +81,23 @@ def generate_constructor_call(function, params):
     # it is likely we need to use a map between potential mdf arg
     # names and the arg name the torch constructor looks for
     for arg in [*args, *kwargs]:
+
+        arg_type, arg_name = arg
+
         # Direct match
-        if arg in potential_args:
-            satisfied_args[arg] = potential_args[arg]
+        if arg_name in potential_args:
+            if type(potential_args[arg_name])=="<class '{}'>".format(arg_type):
+                satisfied_args[arg_name] = potential_args[arg_name]
 
         # Otherwise use map
         else:
-            accepted_arg_names = argument_map[torch_function_name][arg]
+            accepted_arg_names = nn_module_argument_map[torch_function_name][arg_name]
 
             found_match = False
 
             for accepted_name in accepted_arg_names:
                 if accepted_name in potential_args:
-                    satisfied_args[arg] = potential_args[accepted_name]
+                    satisfied_args[arg_name] = potential_args[accepted_name]
                     found_match = True
 
             if not found_match and arg not in kwargs:
@@ -86,59 +109,169 @@ def generate_constructor_call(function, params):
         argstring+="{}={},".format(arg, val)
     argstring = argstring[:-1]
 
-    if torch_module:
+    if nn_module:
         call = "{}.{}({})".format("nn",torch_function_name, argstring)
+
     else:
-        call = "{}.{}({})".format("af", torch_function_name, argstring)
-    return call
+        call = "{}({})".format(torch_function_name, argstring)
+    return call, torch_function
 
+def generate_initializer_call(func_class, params, idx=False):
 
-def get_module_declaration_text(name, node_dict, dependency_graph):
+    settable_params = get_instance_params(func_class)
+
+    text = ""
+
+    for param in settable_params:
+        if param in params:
+            param_text = "nn.Parameter(torch.Tensor({}))".format(params[param])
+            if not idx:
+
+                text += "\n\t\tself.function.{} = {}".format(param, param_text)
+
+            else:
+                text += "\n\t\tself.function_list[-1].{} = {}".format(param, param_text)
+    return text
+
+def get_instance_params(funcname):
+
+    # Want to make a dummy instance to introspect
+    sig = signature(funcname)
+    args = []
+    for param in sig.parameters.values():
+        if "=" not in str(param):
+            arg_type = param.annotation
+            if arg_type == int:
+                args.append(1)
+            elif arg_type == list:
+                args.append([1])
+            elif arg_type == torch.Tensor:
+                args.append(torch.Tensor([1]))
+    dummy = funcname(*args)
+
+    params = []
+
+    for member in getmembers(dummy):
+        name, member_type = member
+        if type(member_type) == nn.parameter.Parameter:
+            params.append(name)
+    del dummy
+
+    return params
+
+def get_module_declaration_text(name, node_dict, dependency_graph, declared_module_types=None):
     """
-    Create text representing
+    Create script specifying classes with forward methods that will be
+    used in the main forward call.
+
+    Two circumstances will arise here:
+        1. We must use one or more nn modules, in which case we construct
+           the declaration component-wise.
+        2. We must use a torch builtin or user specified function, perhaps
+           from another python library, in which case the class definition
+           is slotted in wholesale.
     """
+
+    # TODO: Some repeated logic, could be trimmed
+
+    # Determine if making a custom module, or inserting text
+    functions = node_dict["functions"]
+
     declaration_text = ("\nclass {}(nn.Module):"
                         "\n\tdef __init__(self):"
                         "\n\t\tsuper().__init__()"
                         "\n\t\tself.calls = 0"
-                        ).format(name, name)
+                        ).format(name)
 
-    # Build parameter dictionary that can be used to make constructor call
-    params = {}
+    # Strictly mdf parameters dict
+    parameters = {}
     if "parameters" in node_dict.keys():
-        params = node_dict["parameters"]
+        parameters = node_dict["parameters"]
 
-
+    # Shape parameters since some torch modules used them as constructor args
+    constructor_parameters = {}
     for key in ["input_ports", "output_ports"]:
-        shapes = []
         if key in node_dict.keys():
             port = list(node_dict[key].keys())[0]
-            params[key] = node_dict[key][port]["shape"]
+            constructor_parameters[key] = node_dict[key][port]["shape"]
 
-    # Single function of multi-function
-    functions = node_dict["functions"]
 
+    # Single function node
     if len(functions) == 1:
 
-        constructor_call = generate_constructor_call(functions[0], params)
-        text = "\n\t\tself.function = {}".format(constructor_call)
+        function_name = next(iter(functions[0].keys()))
+        function_type = functions[0][function_name]["function"]
 
-        forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)
-        text += forward_call
+        # Place in existing definition
+        if function_type in udf.__all__ or function_type in torch_builtins.__all__:
+            if function_type in udf.__all__:
+                function_object = getattr(udf, function_type)
+            else:
+                function_object = getattr(torch_builtins, function_type)
 
+            # Grab source code and prepend to text
+            declaration_text = "\n" + getsource(function_object) + declaration_text
+            if declared_module_types:
+                declared_module_types.add(function_type)
+            else:
+                declared_module_types = {function_type}
+            declaration_text += "\n\t\tself.function = {}()".format(function_type)
+
+            # Add forward call to declaration
+            forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)
+            declaration_text += "\n{}".format(forward_call)
+
+
+        # Build module
+        else:
+            constructor_call, func_class = generate_constructor_call(functions[0], constructor_parameters)
+            declaration_text += "\n\t\tself.function = {}".format(constructor_call)
+
+            initializer_call = generate_initializer_call(func_class, parameters, idx=False)
+            declaration_text += "\n{}".format(initializer_call)
+
+            forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)
+            declaration_text += "\n{}".format(forward_call)
+
+    # Multi function node
     else:
-        text = "\n\t\tfunction_list = []"
+        declaration_text += "\n\t\tself.function_list = []"
+        print(functions)
         for function in functions:
-            constructor_call = generate_constructor_call(function, params)
-            text += "\n\t\tfunction_list.append()".format(constructor_call)
-        text+="\n\t\tself.function = nn.Sequential(*function_list)"
+            function_name = next(iter(function.keys()))
+            function_type = function[function_name]["function"]
 
+            # Function is predefined
+            if (function_type in udf.__all__ or function_type in torch_builtins.__all__):
+
+                if declared_module_types and function_type not in declared_module_types:
+
+                    if function_type in udf.__all__:
+                        function_object = getattr(udf, function_type)
+                    else:
+                        function_object = getattr(torch_builtins, function_type)
+
+                    declaration_text = getsource(function_object) + declaration_text
+
+                    if declared_module_types:
+                        declared_module_types.add(function_type)
+                    else:
+                        declared_module_types = {function_type}
+
+                declaration_text += "\n\t\tself.function_list.append({}())".format(function_type)
+
+            else:
+                constructor_call, func_class = generate_constructor_call(function, constructor_parameters)
+                declaration_text += "\n\t\tself.function_list.append({})".format(constructor_call)
+
+                initializer_call = generate_initializer_call(func_class, parameters, idx=True)
+                declaration_text += "\n{}".format(initializer_call)
+
+        declaration_text += "\n\t\tself.function = nn.Sequential(*self.function_list)"
         forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)
-        text += forward_call
+        declaration_text+="\n{}".format(forward_call)
 
-    declaration_text += text
-
-    return declaration_text, forward_signature
+    return declaration_text, forward_signature, declared_module_types
 
 def generate_module_forward_call(name, dependency_graph):
     """
@@ -160,7 +293,6 @@ def generate_module_forward_call(name, dependency_graph):
     module_signature = argstring
 
     return forward_call, module_signature
-
 
 def generate_condition_text(node_name, condition, simple_call="pass", indent="", logic_only=False):
     """
@@ -244,7 +376,6 @@ def generate_condition_text(node_name, condition, simple_call="pass", indent="",
 
     return call
 
-
 def generate_main_forward(ordered_dependency_graph, module_signatures, conditions=None):
     """
     Use graph hierarchy and conditions to specify forward function for main Model call
@@ -306,7 +437,6 @@ def generate_main_forward(ordered_dependency_graph, module_signatures, condition
     main_forward+="\nmodel = Model()"
     return main_forward
 
-
 def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=None):
     """
     Create and assemble following components for a complete script:
@@ -320,16 +450,21 @@ def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=N
             * Forward function logic
     """
     script = ""
-    imports_string = "import torch\nimport torch.nn as nn"
+    imports_string = ("import torch"
+                      "\nimport torch.nn as nn")
 
     # Declarations string
     modules_declaration_text = ""
     module_signatures = {}
+    declared_module_types = None
     for node_name, node_dict in nodes.items():
-        declaration_text, module_signature = get_module_declaration_text(node_name, node_dict, dependency_graph)
+        declaration_text, module_signature, declared_module_types = \
+                                        get_module_declaration_text(node_name,
+                                                                    node_dict,
+                                                                    dependency_graph,
+                                                                    declared_module_types=declared_module_types)
         modules_declaration_text += declaration_text
         module_signatures[node_name] = module_signature
-
 
     # Build Main call
     main_call_declaration = ("\nclass Model(nn.Module):"
