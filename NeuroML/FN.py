@@ -1,42 +1,41 @@
-from neuromllite import Network, Cell, Population, Synapse, RectangularRegion, RandomLayout 
+from neuromllite import Network, Cell, Population, Synapse, RectangularRegion, RandomLayout
 from neuromllite import Projection, RandomConnectivity, OneToOneConnector, Simulation, InputSource, Input
 
 from neuromllite.NetworkGenerator import check_to_generate_or_run
-from neuromllite.sweep.ParameterSweep import *
 
 import sys
 
 
 def generate():
-    
+
     dt = 0.05
     simtime = 100
-    
+
     ################################################################################
     ###   Build new network
 
     net = Network(id='FN')
     net.notes = 'Example of simplified network'
-    
-    net.parameters = { 'initial_w': 0.0, 
-                       'initial_v': -1, 
-                       'a_v': -0.3333333333333333, 
-                       'b_v': 0.0, 
-                       'c_v': 1.0, 
-                       'd_v': 1, 
-                       'e_v': -1.0, 
-                       'f_v': 1.0, 
-                       'time_constant_v': 1.0, 
-                       'a_w': 1.0, 
-                       'b_w': -0.8, 
-                       'c_w': 0.7, 
-                       'time_constant_w': 12.5, 
-                       'threshold': -1.0, 
-                       'mode': 1.0, 
-                       'uncorrelated_activity': 0.0, 
+
+    net.parameters = { 'initial_w': 0.0,
+                       'initial_v': -1,
+                       'a_v': -0.3333333333333333,
+                       'b_v': 0.0,
+                       'c_v': 1.0,
+                       'd_v': 1,
+                       'e_v': -1.0,
+                       'f_v': 1.0,
+                       'time_constant_v': 1.0,
+                       'a_w': 1.0,
+                       'b_w': -0.8,
+                       'c_w': 0.7,
+                       'time_constant_w': 12.5,
+                       'threshold': -1.0,
+                       'mode': 1.0,
+                       'uncorrelated_activity': 0.0,
                        'Iext': 0 }
 
-    cellInput = Cell(id='fn', 
+    cellInput = Cell(id='fn',
                      lems_source_file='FN_Definitions.xml',
                      parameters={})
     for p in net.parameters:
@@ -48,15 +47,15 @@ def generate():
     net.regions.append(r1)
 
 
-    pop = Population(id='FNpop', 
-                    size='1', 
-                    component=cellInput.id, 
+    pop = Population(id='FNpop',
+                    size='1',
+                    component=cellInput.id,
                     properties={'color':'0.2 0.2 0.2', 'radius':3},
                     random_layout = RandomLayout(region=r1.id))
     net.populations.append(pop)
 
 
-    
+
 
     new_file = net.to_json_file('%s.json'%net.id)
 
@@ -74,7 +73,7 @@ def generate():
                                  'y_axis':'%s/0/fn/W'%pop.id}})
 
     sim.to_json_file()
-    
+
     return sim, net
 
 
@@ -90,4 +89,3 @@ if __name__ == "__main__":
     import sys
 
     check_to_generate_or_run(sys.argv, sim)
-
