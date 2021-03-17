@@ -1,0 +1,92 @@
+{
+    "ABCD": {
+        "graphs": {
+            "ABCD": {
+                "notes": "Example of simplified network",
+                "nodes": {
+                    "A_input_0": {
+                        "type": {},
+                        "parameters": {
+                            "variable": "2"
+                        }
+                    },
+                    "A_0": {
+                        "type": {},
+                        "parameters": {
+                            "slope": "2",
+                            "intercept": "2"
+                        }
+                    },
+                    "B_0": {
+                        "type": {},
+                        "parameters": {
+                            "gain": "1.0",
+                            "bias": "0.0",
+                            "x_0": "0.0",
+                            "offset": "0.0"
+                        }
+                    },
+                    "C_0": {
+                        "type": {},
+                        "parameters": {
+                            "rate": "1.0",
+                            "bias": "0.0",
+                            "scale": "1.0",
+                            "offset": "0.0"
+                        }
+                    },
+                    "D_0": {
+                        "type": {},
+                        "parameters": {
+                            "rate": "0.05",
+                            "time_step_size": "0.1s"
+                        }
+                    }
+                },
+                "edges": {
+                    "Edge A_0 to B_0": {
+                        "name": "Edge A_0 to B_0",
+                        "sender_port": "OutputPort",
+                        "receiver_port": "InputPort",
+                        "sender": "A_0",
+                        "receiver": "B_0",
+                        "weight": 1
+                    },
+                    "Edge A_input_0 to A_0": {
+                        "name": "Edge A_input_0 to A_0",
+                        "sender_port": "OutputPort",
+                        "receiver_port": "InputPort",
+                        "sender": "A_input_0",
+                        "receiver": "A_0",
+                        "weight": 1
+                    },
+                    "Edge A_0 to C_0": {
+                        "name": "Edge A_0 to C_0",
+                        "sender_port": "OutputPort",
+                        "receiver_port": "InputPort",
+                        "sender": "A_0",
+                        "receiver": "C_0",
+                        "weight": 1
+                    },
+                    "Edge B_0 to D_0": {
+                        "name": "Edge B_0 to D_0",
+                        "sender_port": "OutputPort",
+                        "receiver_port": "InputPort",
+                        "sender": "B_0",
+                        "receiver": "D_0",
+                        "weight": 1
+                    },
+                    "Edge C_0 to D_0": {
+                        "name": "Edge C_0 to D_0",
+                        "sender_port": "OutputPort",
+                        "receiver_port": "InputPort",
+                        "sender": "C_0",
+                        "receiver": "D_0",
+                        "weight": 1
+                    }
+                },
+                "parameters": {}
+            }
+        }
+    }
+}

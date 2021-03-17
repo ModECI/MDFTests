@@ -1,4 +1,4 @@
-#!/bin/bash
+python alias name="#statement"#!/bin/bash
 set -ex
 
 run_gui_examples=true
@@ -16,6 +16,10 @@ pynml LEMS_SimABCD.xml -nogui
 python ABCD.py -pnl
 ####  Load in PsyNeuLink version & run
 python test_bids_import.py
+
+
+####  Generate MDF version of the network from NeuroMLlite definition
+python ABCD.py -mdf
 
 ####  Generate a graph depicting the structure & *dynamics* of the network from the LEMS description
 pynml LEMS_SimABCD.xml -lems-graph
