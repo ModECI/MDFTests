@@ -15,5 +15,3 @@ for i in range(len(imgs)):
     target = labels[i]
     prediction = model(img)
     print(target, prediction)
-
-
