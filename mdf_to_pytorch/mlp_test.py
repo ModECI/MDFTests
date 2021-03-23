@@ -3,8 +3,8 @@ import torch.nn
 import mdf2torch
 
 # Load Model
-models = mdf2torch.load("example_mdfs/prototype.json", eval_models=True)
-model = models["prototype"]
+models = mdf2torch.load("example_mdfs/mlp_classifier", eval_models=True)
+model = models["mlp_classifier"]
 
 # Iterate on training data, feed forward and log accuracy
 imgs = np.load("example_data/imgs.npy")

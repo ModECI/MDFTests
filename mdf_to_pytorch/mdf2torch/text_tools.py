@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import numpy as np
+import sys
 from collections import defaultdict
 from inspect import getmembers, signature, getsource
 
@@ -17,8 +19,6 @@ def generate_constructor_call(function, params):
     function_name = next(iter(function.keys()))
     function_type = function[function_name]["function"]  # Only handle one at a time
     function_dict = function[function_name]
-
-    print(function_type)
 
     # Check if function name maps to a nn.Module module
     if function_type in nn_module_map:
@@ -124,13 +124,14 @@ def generate_initializer_call(func_class, params, idx=False):
 
     for param in settable_params:
         if param in params:
+
             param_text = "nn.Parameter(torch.Tensor({}))".format(params[param])
+
             if not idx:
-
                 text += "\n\t\tself.function.{} = {}".format(param, param_text)
-
             else:
                 text += "\n\t\tself.function_list[-1].{} = {}".format(param, param_text)
+
     return text
 
 def get_instance_params(funcname):
@@ -236,7 +237,6 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
     # Multi function node
     else:
         declaration_text += "\n\t\tself.function_list = []"
-        print(functions)
         for function in functions:
             function_name = next(iter(function.keys()))
             function_type = function[function_name]["function"]
@@ -437,7 +437,7 @@ def generate_main_forward(ordered_dependency_graph, module_signatures, condition
     main_forward+="\nmodel = Model()"
     return main_forward
 
-def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=None):
+def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=None, weights=None):
     """
     Create and assemble following components for a complete script:
 
@@ -458,6 +458,18 @@ def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=N
     module_signatures = {}
     declared_module_types = None
     for node_name, node_dict in nodes.items():
+
+        # Check here if we have a parameter represented by a larger weight matrix and if so, expand
+        if "parameters" in node_dict:
+            kv_pairs = [(k,v) for k,v in node_dict["parameters"].items()]
+
+            for k,v in kv_pairs:
+                if v.startswith("weights"):
+                    # Load and set
+                    np.set_printoptions(threshold=sys.maxsize)
+                    node_dict["parameters"][k] = np.array2string(weights[v], separator=", ")
+
+
         declaration_text, module_signature, declared_module_types = \
                                         get_module_declaration_text(node_name,
                                                                     node_dict,

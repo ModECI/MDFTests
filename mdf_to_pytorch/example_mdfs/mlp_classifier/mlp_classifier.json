@@ -1,0 +1,149 @@
+{
+  "mlp_classifier": {
+    "graphs": {
+      "mlp_classifier": {
+        "nodes": {
+          "mlp_input_layer": {
+            "parameters": {
+              "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.weight",
+              "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.bias"
+            },
+            "functions": [
+              {
+                "Linear_1": {
+                  "function": "linear"
+                }
+              }
+            ],
+            "input_ports": {
+              "in_1": {
+                "shape": 196
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 128
+              }
+            }
+          },
+          "mlp_relu_1": {
+            "functions": [
+              {
+                "Relu_1": {
+                  "function": "relu"
+                }
+              }
+            ],
+            "input_ports": {
+              "in_1": {
+                "shape": 128
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 128
+              }
+            }
+          },
+          "mlp_hidden_layer_with_relu": {
+            "parameters": {
+              "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.weight",
+              "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.bias"
+            },
+            "functions": [
+              {
+                "Linear_2": {
+                  "function": "linear"
+                }
+              },
+              {
+                "Relu_2": {
+                  "function": "relu"
+                }
+              }
+            ],
+            "input_ports": {
+              "in_1": {
+                "shape": 128
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 128
+              }
+            }
+          },
+          "mlp_output_layer": {
+            "parameters": {
+              "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.weight",
+              "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.bias"
+            },
+            "functions": [
+              {
+                "Linear_3": {
+                  "function": "linear"
+                }
+              }
+            ],
+            "input_ports": {
+              "in_1": {
+                "shape": 128
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 10
+              }
+            }
+          },
+          "argmax_1": {
+            "functions": [
+              {
+                "argmax_1": {
+                  "function": "argmax"
+                }
+              }
+            ],
+            "input_ports": {
+              "in_1": {
+                "shape": 10
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 1
+              }
+            }
+          }
+        },
+        "edges": {
+          "edge1": {
+            "sender": "mlp_input_layer",
+            "receiver": "mlp_relu_1",
+            "sender_port": "out_1",
+            "reciever_port": "in_1"
+          },
+          "edge2": {
+            "sender": "mlp_relu_1",
+            "receiver": "mlp_hidden_layer_with_relu",
+            "sender_port": "out_1",
+            "reciever_port": "in_1"
+          },
+          "edge3": {
+            "sender": "mlp_hidden_layer_with_relu",
+            "receiver": "mlp_output_layer",
+            "sender_port": "out_1",
+            "reciever_port": "in_1"
+          },
+          "edge4": {
+            "sender": "mlp_output_layer",
+            "receiver": "argmax_1",
+            "sender_port": "out_1",
+            "reciever_port": "in_1"
+          }
+        },
+        "conditions": {}
+      }
+    }
+  }
+}
