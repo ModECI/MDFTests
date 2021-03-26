@@ -32,6 +32,9 @@ script:
 
   - cd NeuroML
   - ./regenerateAndTest.sh -nogui
+  - cd ../PsyNeuLink
+  - ./regenerateAndTest.sh
+
 
   # List currently installed Python packages
   - pip freeze
