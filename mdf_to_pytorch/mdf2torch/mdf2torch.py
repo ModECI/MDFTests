@@ -12,7 +12,7 @@ def _generate_scripts_from_json(model_input):
     """
 
     # Load mdf json into dict
-    mdf_dict = load_json(model_input)
+    mdf_dict, weights = load_json(model_input)
 
     # Get all top-level (non-nested) graphs
     graphs = get_graphs(mdf_dict)
@@ -46,7 +46,7 @@ def _generate_scripts_from_json(model_input):
         dependency_graph[next(iter(ordered_dependency_graph[0]))] = {"input"}
 
         # Build script
-        script = build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=conditions)
+        script = build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=conditions, weights=weights)
         scripts[graph_name] = script
 
     return scripts

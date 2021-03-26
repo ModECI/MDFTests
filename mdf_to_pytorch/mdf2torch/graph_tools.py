@@ -1,6 +1,29 @@
+import os
 import json
+import h5py
 
 def load_json(model_input):
+
+    # Check if path is a to a dir or file. Also check for weight matrices
+    mdf_path = None
+    weights = {}
+
+    if os.path.isdir(model_input):
+        for file_path in os.listdir(model_input):
+            if file_path.endswith(".json") and not mdf_path:
+                mdf_path = os.path.join(model_input, file_path)
+            elif file_path.endswith(".json") and mdf_path:
+                raise Exception("Ambiguous model path")
+            elif file_path.endswith(".h5"):
+
+                f = h5py.File(os.path.join(model_input, file_path), 'r')
+
+                for key in list(f.keys()):
+                    weight_mat = f[key][:]
+                    weights[key] = weight_mat
+                f.close()
+
+        model_input = mdf_path
 
     # Take either .json or json string
     try:
@@ -9,7 +32,7 @@ def load_json(model_input):
         pass
     model_input = json.loads(model_input)
 
-    return model_input
+    return model_input, weights
 
 
 def get_graphs(mdf_dict):
