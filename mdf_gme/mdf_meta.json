@@ -124,6 +124,9 @@
       "attributes": {
         "name": "InputPort"
       },
+      "registry": {
+        "isPort": true
+      },
       "attribute_meta": {
         "shape": {
           "type": "string"
@@ -176,6 +179,9 @@
       "id": "@meta:OutputPort",
       "attributes": {
         "name": "OutputPort"
+      },
+      "registry": {
+        "isPort": true
       },
       "attribute_meta": {
         "value": {
