@@ -22,7 +22,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Linear_1"
               }
             }
           },
@@ -41,7 +42,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Relu_1"
               }
             }
           },
@@ -69,7 +71,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Relu_2"
               }
             }
           },
@@ -92,7 +95,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 10
+                "shape": 10,
+                "value":"Linear_3"
               }
             }
           },
@@ -111,7 +115,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 1
+                "shape": 1,
+                "value":"argmax_1"
               }
             }
           }
@@ -121,25 +126,25 @@
             "sender": "mlp_input_layer",
             "receiver": "mlp_relu_1",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge2": {
             "sender": "mlp_relu_1",
             "receiver": "mlp_hidden_layer_with_relu",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge3": {
             "sender": "mlp_hidden_layer_with_relu",
             "receiver": "mlp_output_layer",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge4": {
             "sender": "mlp_output_layer",
             "receiver": "argmax_1",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           }
         },
         "conditions": {}
