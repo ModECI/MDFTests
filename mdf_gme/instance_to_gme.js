@@ -28,7 +28,7 @@ function parseGraph(name, data) {
             notes: data.notes || '',
         },
         pointers: {
-            base: '@meta:Model',
+            base: '@meta:Graph',
         },
         children,
     };

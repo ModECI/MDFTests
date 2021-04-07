@@ -17,7 +17,7 @@
         "notes": ""
       },
       "pointers": {
-        "base": "@meta:Model"
+        "base": "@meta:Graph"
       },
       "children": [
         {
