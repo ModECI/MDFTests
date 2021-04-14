@@ -8,13 +8,11 @@
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_1": {
                   "function": "linear"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 196
@@ -28,13 +26,11 @@
             }
           },
           "mlp_relu_1": {
-            "functions": [
-              {
+            "functions": {
                 "Relu_1": {
                   "function": "relu"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -47,23 +43,16 @@
               }
             }
           },
-          "mlp_hidden_layer_with_relu": {
+          "mlp_hidden_layer": {
             "parameters": {
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_2": {
                   "function": "linear"
                 }
               },
-              {
-                "Relu_2": {
-                  "function": "relu"
-                }
-              }
-            ],
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -76,18 +65,34 @@
               }
             }
           },
+          "mlp_relu_2": {
+            "functions": {
+                "Relu_2": {
+                  "function": "relu"
+                }
+              },
+            "input_ports": {
+              "in_1": {
+                "shape": 128
+              }
+            },
+            "output_ports": {
+              "out_1": {
+                "shape": 128,
+                "value":"Relu_1"
+              }
+            }
+          },
           "mlp_output_layer": {
             "parameters": {
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_3": {
                   "function": "linear"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -101,13 +106,11 @@
             }
           },
           "argmax_1": {
-            "functions": [
-              {
+            "functions": {
                 "argmax_1": {
                   "function": "argmax"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 10
@@ -130,25 +133,30 @@
           },
           "edge2": {
             "sender": "mlp_relu_1",
-            "receiver": "mlp_hidden_layer_with_relu",
+            "receiver": "mlp_hidden_layer",
             "sender_port": "out_1",
             "receiver_port": "in_1"
           },
           "edge3": {
-            "sender": "mlp_hidden_layer_with_relu",
-            "receiver": "mlp_output_layer",
+            "sender": "mlp_hidden_layer",
+            "receiver": "mlp_relu_2",
             "sender_port": "out_1",
             "receiver_port": "in_1"
           },
           "edge4": {
+            "sender": "mlp_relu_2",
+            "receiver": "mlp_output_layer",
+            "sender_port": "out_1",
+            "receiver_port": "in_1"
+          },
+          "edge5": {
             "sender": "mlp_output_layer",
             "receiver": "argmax_1",
             "sender_port": "out_1",
             "receiver_port": "in_1"
           }
-        },
-        "conditions": {}
+        }
+        }
       }
     }
-  }
 }

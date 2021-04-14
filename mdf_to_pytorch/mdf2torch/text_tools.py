@@ -10,15 +10,16 @@ from .function import mod_torch_builtins as torch_builtins
 from .function.alias import nn_module_map, nn_module_argument_map
 from .mdf2torch_errors import TorchNameError, TorchArgumentError
 
-def generate_constructor_call(function, params):
+def generate_constructor_call(function_info, params):
     """
     Generate the constructor for a given torch module
     """
 
     # Map the name of the function to torch.nn or another lib if specified
-    function_name = next(iter(function.keys()))
-    function_type = function[function_name]["function"]  # Only handle one at a time
-    function_dict = function[function_name]
+
+
+    function_name, function_dict = function_info
+    function_type = function_dict["function"]
 
     # Check if function name maps to a nn.Module module
     if function_type in nn_module_map:
@@ -200,8 +201,8 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
     # Single function node
     if len(functions) == 1:
 
-        function_name = next(iter(functions[0].keys()))
-        function_type = functions[0][function_name]["function"]
+        function_name = list(functions.keys())[0]
+        function_type = functions[function_name]["function"]
 
         # Place in existing definition
         if function_type in udf.__all__ or function_type in torch_builtins.__all__:
@@ -225,7 +226,7 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
 
         # Build module
         else:
-            constructor_call, func_class = generate_constructor_call(functions[0], constructor_parameters)
+            constructor_call, func_class = generate_constructor_call((function_name, functions[function_name]), constructor_parameters)
             declaration_text += "\n\t\tself.function = {}".format(constructor_call)
 
             initializer_call = generate_initializer_call(func_class, parameters, idx=False)
