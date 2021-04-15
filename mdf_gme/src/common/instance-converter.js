@@ -1,6 +1,15 @@
+const _ = require('underscore');
 const Model = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name, format, generating_application, notes} = data.attributes;
+        const graphs = Object.fromEntries(data.children.map(Graph.toMDF));
+        const mdf = {
+            format,
+            generating_application,
+            notes,
+            graphs,
+        };
+        return [name, mdf];
     },
 
     toGME(name, data) {
@@ -23,8 +32,19 @@ const Model = {
 };
 
 const Graph = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name, notes} = data.attributes;
+        const {nodes=[], edges=[]} = _.groupBy(
+            data.children,
+            child => child.pointers.base.includes('Node') ? 'nodes' : 'edges'
+        );
+        console.log({nodes, edges: edges.map(e => e.pointers)})
+        const mdf = {
+            notes,
+            nodes: Object.fromEntries(nodes.map(Node.toMDF)),
+            edges: Object.fromEntries(edges.map(edge => Edge.toMDF(nodes, edge))),
+        };
+        return [name, mdf];
     },
 
     toGME(name, data) {
@@ -45,12 +65,43 @@ const Graph = {
 };
 
 const Node = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name} = data.attributes;
+        const mdf = {};
+
+        // TODO: parameters
+        const gmeBaseToMDFAttribute = {
+            '@meta:DictionaryEntry': 'parameters',
+            '@meta:InputPort': 'input_ports',
+            '@meta:OutputPort': 'output_ports',
+            '@meta:Function': 'functions',
+        };
+        const {parameters=[], input_ports=[], functions=[], output_ports=[]} = _.groupBy(
+            data.children,
+            child => {
+                if (gmeBaseToMDFAttribute[child.pointers.base]) {
+                    return gmeBaseToMDFAttribute[child.pointers.base];
+                }
+                throw new Error(`Unrecognized base: ${child.pointers.base}`);
+            }
+        );
+        if (parameters.length) {
+            mdf.parameters = Object.fromEntries(parameters.map(Parameter.toMDF));
+        }
+        if (input_ports.length) {
+            mdf.input_ports = Object.fromEntries(input_ports.map(InputPort.toMDF));
+        }
+        if (functions.length) {
+            mdf.functions = Object.fromEntries(functions.map(Function.toMDF));
+        }
+        if (output_ports.length) {
+            mdf.output_ports = Object.fromEntries(output_ports.map(OutputPort.toMDF));
+        }
+        return [name, mdf];
     },
 
     toGME(name, data) {
-        const parameters = Object.entries(data.parameters).map(entry => Parameters.toGME(name, ...entry));
+        const parameters = Object.entries(data.parameters).map(entry => Parameter.toGME(name, ...entry));
 
         const inputNodes = Object.entries(data.input_ports || {}).map(entry => InputPort.toGME(name, ...entry));
         const outputNodes = Object.entries(data.output_ports || {}).map(entry => OutputPort.toGME(name, ...entry));
@@ -62,7 +113,7 @@ const Node = {
                 id: name,
             },
             pointers: {
-                base: '@meta:Model'
+                base: '@meta:Node'
             },
             sets: {
                 parameters: parameters.map(param => param.id)
@@ -72,9 +123,10 @@ const Node = {
     }
 };
 
-const Parameters = {
-    toMDF() {
-        // TODO
+const Parameter = {
+    toMDF(data) {
+        const {name, value} = data.attributes;
+        return [name, value]
     },
     
     toGME(parentName, name, data) {
@@ -92,8 +144,10 @@ const Parameters = {
 };
 
 const InputPort = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name, shape} = data.attributes;
+        const mdf = {shape};
+        return [name, mdf];
     },
 
     toGME(nodeName, name, data) {
@@ -112,8 +166,10 @@ const InputPort = {
 };
 
 const OutputPort = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name, value} = data.attributes;
+        const mdf = {value}
+        return [name, mdf];
     },
 
     toGME(nodeName, name, data) {
@@ -132,12 +188,17 @@ const OutputPort = {
 };
 
 const Function = {
-    toMDF() {
-        // TODO
+    toMDF(data) {
+        const {name} = data.attributes;
+        const mdf = {
+            function: data.attributes.function,
+            args: Object.fromEntries(data.children.map(Parameter.toMDF)),
+        };
+        return [name, mdf];
     },
 
     toGME(name, data) {
-        const args = Object.entries(data.args || {}).map(entry => Parameters.toGME(name, ...entry));
+        const args = Object.entries(data.args || {}).map(entry => Parameter.toGME(name, ...entry));
         return {
             attributes: {
                 name,
@@ -157,8 +218,31 @@ const Function = {
 };
 
 const Edge = {
-    toMDF() {
-        // TODO
+    toMDF(nodes, data) {
+        const {name} = data.attributes;
+        const portNodePairs = nodes
+            .flatMap(
+                // TODO: use the @meta tags for meta pointers
+                node => node.children.filter(child => child.pointers.base.includes('Port'))
+                    .map(port => [port, node])
+            );
+        const [sender_port, sender] = portNodePairs  // TODO: make sure we use paths for the ids on export!
+            .find(pair => {
+                const [port, node] = pair;
+                return port.id === data.pointers.src;
+            });
+        const [receiver_port, receiver] = portNodePairs
+            .find(pair => {
+                const [port, node] = pair;
+                return port.id === data.pointers.dst;
+            });
+        const mdf = {
+            sender: sender.attributes.name,
+            receiver: receiver.attributes.name,
+            sender_port: sender_port.attributes.name,
+            receiver_port: receiver_port.attributes.name,
+        };
+        return [name, mdf];
     },
 
     toGME(name, data) {
