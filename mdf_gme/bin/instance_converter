@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const {Model} = require('../src/common/instance-converter');
 
-const json = require(process.argv[2]);
-const output = Object.entries(json).map(entry => Model.toGME(...entry)).shift();
+const json = require(process.cwd() + '/' + process.argv[2]);
+const isGMEJSON = json.hasOwnProperty('attributes');
+const output = isGMEJSON ? Object.fromEntries([Model.toMDF(json)]) :
+    Object.entries(json).map(entry => Model.toGME(...entry)).shift();
 console.log(JSON.stringify(output, null, 2));
