@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+const {Model} = require('../src/common/instance-converter');
+
+const json = require(process.argv[2]);
+const output = Object.entries(json).map(entry => Model.toGME(...entry)).shift();
+console.log(JSON.stringify(output, null, 2));

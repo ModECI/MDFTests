@@ -173,6 +173,4 @@ const Edge = {
     }
 };
 
-const json = require(process.argv[2]);
-const output = Object.entries(json).map(entry => Model.toGME(...entry)).shift();
-console.log(JSON.stringify(output, null, 2));
+module.exports = {Model};
