@@ -134,7 +134,7 @@ def main():
 
     mod_graph = get_model_graph()
 
-    mdf_to_graphviz(mod_graph,view_on_render=True, level=3)
+    mdf_to_graphviz(mod_graph,view_on_render=False, level=3)
 
     from neuromllite.utils import FORMAT_NUMPY, FORMAT_TENSORFLOW
 
@@ -147,6 +147,34 @@ def main():
     for n in ['mlp_input_layer','mlp_relu_1','mlp_hidden_layer_with_relu','mlp_output_layer']:
         out = eg.enodes[n].evaluable_outputs['out_port'].curr_value
         print('Final output value of node %s: %s, shape: %s'%(n, out, out.shape))
+
+    # Iterate on training data, feed forward and log accuracy
+    imgs = np.load("example_data/imgs.npy")
+    labels = np.load("example_data/labels.npy")
+
+    import torch.nn
+    matches = 0
+    imgs_to_test = imgs[:]
+    for i in range(len(imgs_to_test)):
+        ii = imgs[i,:,:]
+        target = labels[i]
+        img = torch.Tensor(ii).view(-1, 14*14).numpy()
+        #plot_img(img, 'Post_%i (%s)'%(i, img.shape))
+        print('***********\nTesting image %i (label: %s): %s\n%s'%(i,target,np.array2string(img,threshold=5, edgeitems=2),img.shape))
+        #print(mod_graph.nodes[0].parameters['input'])
+        mod_graph.nodes[0].parameters['input'] = img
+        eg = EvaluableGraph(mod_graph, verbose=False)
+        eg.evaluate(array_format=format)
+        for n in ['mlp_output_layer']:
+            out = eg.enodes[n].evaluable_outputs['out_port'].curr_value
+            print('Output of evaluated graph: %s %s'%(out,out.shape))
+            prediction = np.argmax(out)
+
+        match = target==int(prediction)
+        if match: matches+=1
+        print('Target: %s, prediction: %s, match: %s'%(target, prediction, match))
+
+    print('Matches: %i/%i, accuracy: %s%%'%(matches,len(imgs_to_test), (100.*matches)/len(imgs_to_test)))
 
 if __name__ == "__main__":
     main()
