@@ -38,7 +38,6 @@ const Graph = {
             data.children,
             child => child.pointers.base.includes('Node') ? 'nodes' : 'edges'
         );
-        console.log({nodes, edges: edges.map(e => e.pointers)})
         const mdf = {
             notes,
             nodes: Object.fromEntries(nodes.map(Node.toMDF)),
