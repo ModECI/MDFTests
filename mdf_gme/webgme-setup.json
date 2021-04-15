@@ -1,6 +1,11 @@
 {
   "components": {
-    "plugins": {}
+    "plugins": {
+      "ExportToMDFPython": {
+        "src": "src/plugins/ExportToMDFPython",
+        "test": "test/plugins/ExportToMDFPython"
+      }
+    }
   },
   "dependencies": {
     "plugins": {
