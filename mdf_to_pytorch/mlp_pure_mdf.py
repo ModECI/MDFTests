@@ -5,6 +5,7 @@ from modeci_mdf.export.graphviz import mdf_to_graphviz
 import numpy as np
 import sys
 import h5py
+import time
 
 def get_weight_info():
 
@@ -100,8 +101,6 @@ def get_model_graph():
     )
     mod_graph.edges.append(e2)
 
-
-
     weight = weights['weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.weight']
     bias = weights['weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.bias']
 
@@ -132,9 +131,11 @@ def get_model_graph():
 
 def main():
 
+    test_all = '-test' in sys.argv
+
     mod_graph = get_model_graph()
 
-    mdf_to_graphviz(mod_graph,view_on_render=False, level=3)
+    mdf_to_graphviz(mod_graph,view_on_render=not test_all, level=3)
 
     from neuromllite.utils import FORMAT_NUMPY, FORMAT_TENSORFLOW
 
@@ -148,33 +149,36 @@ def main():
         out = eg.enodes[n].evaluable_outputs['out_port'].curr_value
         print('Final output value of node %s: %s, shape: %s'%(n, out, out.shape))
 
-    # Iterate on training data, feed forward and log accuracy
-    imgs = np.load("example_data/imgs.npy")
-    labels = np.load("example_data/labels.npy")
+    if test_all:
+        # Iterate on training data, feed forward and log accuracy
+        imgs = np.load("example_data/imgs.npy")
+        labels = np.load("example_data/labels.npy")
 
-    import torch.nn
-    matches = 0
-    imgs_to_test = imgs[:]
-    for i in range(len(imgs_to_test)):
-        ii = imgs[i,:,:]
-        target = labels[i]
-        img = torch.Tensor(ii).view(-1, 14*14).numpy()
-        #plot_img(img, 'Post_%i (%s)'%(i, img.shape))
-        print('***********\nTesting image %i (label: %s): %s\n%s'%(i,target,np.array2string(img,threshold=5, edgeitems=2),img.shape))
-        #print(mod_graph.nodes[0].parameters['input'])
-        mod_graph.nodes[0].parameters['input'] = img
-        eg = EvaluableGraph(mod_graph, verbose=False)
-        eg.evaluate(array_format=format)
-        for n in ['mlp_output_layer']:
-            out = eg.enodes[n].evaluable_outputs['out_port'].curr_value
-            print('Output of evaluated graph: %s %s'%(out,out.shape))
-            prediction = np.argmax(out)
+        import torch.nn
+        matches = 0
+        imgs_to_test = imgs[:300]
 
-        match = target==int(prediction)
-        if match: matches+=1
-        print('Target: %s, prediction: %s, match: %s'%(target, prediction, match))
+        start = time.time()
+        for i in range(len(imgs_to_test)):
+            ii = imgs[i,:,:]
+            target = labels[i]
+            img = torch.Tensor(ii).view(-1, 14*14).numpy()
+            #plot_img(img, 'Post_%i (%s)'%(i, img.shape))
+            print('***********\nTesting image %i (label: %s): %s\n%s'%(i,target,np.array2string(img,threshold=5, edgeitems=2),img.shape))
+            #print(mod_graph.nodes[0].parameters['input'])
+            mod_graph.nodes[0].parameters['input'] = img
+            eg = EvaluableGraph(mod_graph, verbose=False)
+            eg.evaluate(array_format=format)
+            for n in ['mlp_output_layer']:
+                out = eg.enodes[n].evaluable_outputs['out_port'].curr_value
+                print('Output of evaluated graph: %s %s (%s)'%(out,out.shape,type(out).__name__))
+                prediction = np.argmax(out)
 
-    print('Matches: %i/%i, accuracy: %s%%'%(matches,len(imgs_to_test), (100.*matches)/len(imgs_to_test)))
+            match = target==int(prediction)
+            if match: matches+=1
+            print('Target: %s, prediction: %s, match: %s'%(target, prediction, match))
+        t = time.time()-start
+        print('Matches: %i/%i, accuracy: %s%%. Total time: %.4f sec (%.4fs per run)'%(matches,len(imgs_to_test), (100.*matches)/len(imgs_to_test),t,t/len(imgs_to_test)))
 
 if __name__ == "__main__":
     main()
