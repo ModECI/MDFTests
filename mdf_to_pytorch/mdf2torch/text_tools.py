@@ -10,15 +10,16 @@ from .function import mod_torch_builtins as torch_builtins
 from .function.alias import nn_module_map, nn_module_argument_map
 from .mdf2torch_errors import TorchNameError, TorchArgumentError
 
-def generate_constructor_call(function, params):
+def generate_constructor_call(function_info, params):
     """
     Generate the constructor for a given torch module
     """
 
     # Map the name of the function to torch.nn or another lib if specified
-    function_name = next(iter(function.keys()))
-    function_type = function[function_name]["function"]  # Only handle one at a time
-    function_dict = function[function_name]
+
+
+    function_name, function_dict = function_info
+    function_type = function_dict["function"]
 
     # Check if function name maps to a nn.Module module
     if function_type in nn_module_map:
@@ -200,8 +201,8 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
     # Single function node
     if len(functions) == 1:
 
-        function_name = next(iter(functions[0].keys()))
-        function_type = functions[0][function_name]["function"]
+        function_name = list(functions.keys())[0]
+        function_type = functions[function_name]["function"]
 
         # Place in existing definition
         if function_type in udf.__all__ or function_type in torch_builtins.__all__:
@@ -225,7 +226,7 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
 
         # Build module
         else:
-            constructor_call, func_class = generate_constructor_call(functions[0], constructor_parameters)
+            constructor_call, func_class = generate_constructor_call((function_name, functions[function_name]), constructor_parameters)
             declaration_text += "\n\t\tself.function = {}".format(constructor_call)
 
             initializer_call = generate_initializer_call(func_class, parameters, idx=False)
@@ -236,10 +237,33 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
 
     # Multi function node
     else:
+
+        from toposort import toposort
+
+        # Need to put function calls in proper order
+        function_keys = set([key for key in functions.keys()])
+
+        function_graph = {}
+
+
+        for func_name, func_dict in functions.items():
+            if "args" in func_dict:
+                depends_on = func_dict["args"]["variable0"]
+
+                if depends_on in function_keys:
+
+                    function_graph[func_name] = {depends_on}
+
+
+        function_graph = toposort(function_graph)
+        function_names = [list(e)[0] for e in list(function_graph)]
+
         declaration_text += "\n\t\tself.function_list = []"
-        for function in functions:
-            function_name = next(iter(function.keys()))
-            function_type = function[function_name]["function"]
+
+
+        for function_name in function_names:
+            function = functions[function_name]
+            function_type = functions[function_name]["function"]
 
             # Function is predefined
             if (function_type in udf.__all__ or function_type in torch_builtins.__all__):
@@ -261,11 +285,12 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
                 declaration_text += "\n\t\tself.function_list.append({}())".format(function_type)
 
             else:
-                constructor_call, func_class = generate_constructor_call(function, constructor_parameters)
+                constructor_call, func_class = generate_constructor_call((function_name, function), constructor_parameters)
                 declaration_text += "\n\t\tself.function_list.append({})".format(constructor_call)
 
                 initializer_call = generate_initializer_call(func_class, parameters, idx=True)
                 declaration_text += "\n{}".format(initializer_call)
+
 
         declaration_text += "\n\t\tself.function = nn.Sequential(*self.function_list)"
         forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)

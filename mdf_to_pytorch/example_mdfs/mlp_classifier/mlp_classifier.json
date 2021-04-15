@@ -8,13 +8,11 @@
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_1": {
                   "function": "linear"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 196
@@ -22,18 +20,17 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Linear_1"
               }
             }
           },
           "mlp_relu_1": {
-            "functions": [
-              {
+            "functions": {
                 "Relu_1": {
                   "function": "relu"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -41,7 +38,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Relu_1"
               }
             }
           },
@@ -50,18 +48,20 @@
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_2": {
-                  "function": "linear"
+                  "function": "linear",
+                  "args":{
+                    "variable0":"in_1"
+                  }
+                },
+                "Relu_2": {
+                  "function": "relu",
+                  "args":{
+                    "variable0":"Linear_2"
+                  }
                 }
               },
-              {
-                "Relu_2": {
-                  "function": "relu"
-                }
-              }
-            ],
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -69,7 +69,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 128
+                "shape": 128,
+                "value":"Relu_2"
               }
             }
           },
@@ -78,13 +79,11 @@
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_output_layer.parameters.bias"
             },
-            "functions": [
-              {
+            "functions":{
                 "Linear_3": {
                   "function": "linear"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 128
@@ -92,18 +91,17 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 10
+                "shape": 10,
+                "value":"Linear_3"
               }
             }
           },
           "argmax_1": {
-            "functions": [
-              {
+            "functions": {
                 "argmax_1": {
                   "function": "argmax"
                 }
-              }
-            ],
+              },
             "input_ports": {
               "in_1": {
                 "shape": 10
@@ -111,7 +109,8 @@
             },
             "output_ports": {
               "out_1": {
-                "shape": 1
+                "shape": 1,
+                "value":"argmax_1"
               }
             }
           }
@@ -121,29 +120,28 @@
             "sender": "mlp_input_layer",
             "receiver": "mlp_relu_1",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge2": {
             "sender": "mlp_relu_1",
             "receiver": "mlp_hidden_layer_with_relu",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge3": {
             "sender": "mlp_hidden_layer_with_relu",
             "receiver": "mlp_output_layer",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           },
           "edge4": {
             "sender": "mlp_output_layer",
             "receiver": "argmax_1",
             "sender_port": "out_1",
-            "reciever_port": "in_1"
+            "receiver_port": "in_1"
           }
-        },
-        "conditions": {}
+        }
+        }
       }
     }
-  }
 }
