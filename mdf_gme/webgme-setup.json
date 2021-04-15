@@ -5,6 +5,11 @@
         "src": "src/plugins/ExportToMDFPython",
         "test": "test/plugins/ExportToMDFPython"
       }
+    },
+    "seeds": {
+      "MDF": {
+        "src": "src/seeds/MDF"
+      }
     }
   },
   "dependencies": {
@@ -17,6 +22,7 @@
         "project": "webgme-json-importer",
         "path": "node_modules/webgme-json-importer/src/plugins/SetStateFromJSON"
       }
-    }
+    },
+    "seeds": {}
   }
 }
