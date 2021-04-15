@@ -1,4 +1,17 @@
 {
-  "components": {},
-  "dependencies": {}
+  "components": {
+    "plugins": {}
+  },
+  "dependencies": {
+    "plugins": {
+      "ExportToJSON": {
+        "project": "webgme-json-importer",
+        "path": "node_modules/webgme-json-importer/src/plugins/ExportToJSON"
+      },
+      "SetStateFromJSON": {
+        "project": "webgme-json-importer",
+        "path": "node_modules/webgme-json-importer/src/plugins/SetStateFromJSON"
+      }
+    }
+  }
 }

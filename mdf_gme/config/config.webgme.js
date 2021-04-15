@@ -7,6 +7,7 @@ var config = require('webgme/config/config.default'),
     validateConfig = require('webgme/config/validator');
 
 // The paths can be loaded from the webgme-setup.json
+config.plugin.basePaths.push(__dirname + '/../node_modules/webgme-json-importer/src/plugins');
 
 
 
@@ -18,6 +19,9 @@ var config = require('webgme/config/config.default'),
 
 // Add requirejs paths
 config.requirejsPaths = {
+  'SetStateFromJSON': 'node_modules/webgme-json-importer/src/plugins/SetStateFromJSON',
+  'ExportToJSON': 'node_modules/webgme-json-importer/src/plugins/ExportToJSON',
+  'webgme-json-importer': './node_modules/webgme-json-importer/src/common',
   'mdf_gme': './src/common'
 };
 
