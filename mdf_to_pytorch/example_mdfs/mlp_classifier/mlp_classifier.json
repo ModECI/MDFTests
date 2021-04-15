@@ -43,14 +43,23 @@
               }
             }
           },
-          "mlp_hidden_layer": {
+          "mlp_hidden_layer_with_relu": {
             "parameters": {
               "weight": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.weight",
               "bias": "weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_hidden_layer_with_relu.parameters.bias"
             },
             "functions":{
                 "Linear_2": {
-                  "function": "linear"
+                  "function": "linear",
+                  "args":{
+                    "variable0":"in_1"
+                  }
+                },
+                "Relu_2": {
+                  "function": "relu",
+                  "args":{
+                    "variable0":"Linear_2"
+                  }
                 }
               },
             "input_ports": {
@@ -62,24 +71,6 @@
               "out_1": {
                 "shape": 128,
                 "value":"Relu_2"
-              }
-            }
-          },
-          "mlp_relu_2": {
-            "functions": {
-                "Relu_2": {
-                  "function": "relu"
-                }
-              },
-            "input_ports": {
-              "in_1": {
-                "shape": 128
-              }
-            },
-            "output_ports": {
-              "out_1": {
-                "shape": 128,
-                "value":"Relu_1"
               }
             }
           },
@@ -133,23 +124,17 @@
           },
           "edge2": {
             "sender": "mlp_relu_1",
-            "receiver": "mlp_hidden_layer",
+            "receiver": "mlp_hidden_layer_with_relu",
             "sender_port": "out_1",
             "receiver_port": "in_1"
           },
           "edge3": {
-            "sender": "mlp_hidden_layer",
-            "receiver": "mlp_relu_2",
-            "sender_port": "out_1",
-            "receiver_port": "in_1"
-          },
-          "edge4": {
-            "sender": "mlp_relu_2",
+            "sender": "mlp_hidden_layer_with_relu",
             "receiver": "mlp_output_layer",
             "sender_port": "out_1",
             "receiver_port": "in_1"
           },
-          "edge5": {
+          "edge4": {
             "sender": "mlp_output_layer",
             "receiver": "argmax_1",
             "sender_port": "out_1",
