@@ -68,7 +68,6 @@ const Node = {
         const {name} = data.attributes;
         const mdf = {};
 
-        // TODO: parameters
         const gmeBaseToMDFAttribute = {
             '@meta:DictionaryEntry': 'parameters',
             '@meta:InputPort': 'input_ports',
@@ -225,15 +224,15 @@ const Edge = {
                 node => node.children.filter(child => child.pointers.base.includes('Port'))
                     .map(port => [port, node])
             );
-        const [sender_port, sender] = portNodePairs  // TODO: make sure we use paths for the ids on export!
+        const [sender_port, sender] = portNodePairs
             .find(pair => {
                 const [port, node] = pair;
-                return port.id === data.pointers.src;
+                return port.id === data.pointers.src || port.path === data.pointers.src;
             });
         const [receiver_port, receiver] = portNodePairs
             .find(pair => {
                 const [port, node] = pair;
-                return port.id === data.pointers.dst;
+                return port.id === data.pointers.dst || port.path === data.pointers.dst;
             });
         const mdf = {
             sender: sender.attributes.name,
