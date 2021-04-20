@@ -5,5 +5,5 @@ import json
 data = json.loads("""<%= JSON.stringify(mdfJson) %>""")
 mod_graph = Model()
 mod_graph = _parse_element(data, mod_graph)
-eg = EvaluableGraph(mod_graph, False)
-eg.evaluate()
+graph = EvaluableGraph(mod_graph, False)
+result = graph  # DeepForge requires the concept of interest to be available as "result"
