@@ -6,15 +6,20 @@ define([
     'mdf_gme/instance-converter',
     'webgme-json-importer/JSONImporter',
     'plugin/PluginBase',
+    'text!./template.py.ejs',
+    'underscore',
 ], function (
     pluginMetadata,
     MDFConverter,
     JSONImporter,
-    PluginBase
+    PluginBase,
+    PythonCodeTpl,
+    _,
 ) {
     'use strict';
 
     pluginMetadata = JSON.parse(pluginMetadata);
+    PythonCodeTpl = _.template(PythonCodeTpl);
 
     class ExportToMDFPython extends PluginBase {
         constructor() {
@@ -24,9 +29,11 @@ define([
 
         async main(callback) {
             const mdfJson = await this.getMDFJson(this.activeNode);
-            console.log(mdfJson);
-            // TODO: we need to inline this in a python file and create an EvaluableGraph
-            // TODO: Then we need to assign the EvaluableGraph instance to "result"
+            const code = PythonCodeTpl({mdfJson});
+            const hash = await this.blobClient.putFile('output.py', code);
+            this.result.addArtifact(hash);
+            this.result.setSuccess(true);
+            callback(null, this.result);
         }
 
         async getMDFJson(node) {

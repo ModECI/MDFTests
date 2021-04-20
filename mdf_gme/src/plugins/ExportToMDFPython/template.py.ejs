@@ -1,0 +1,9 @@
+from neuromllite.utils import _parse_element
+from modeci_mdf.mdf import Model
+import json
+
+data = json.loads("""<%= JSON.stringify(mdfJson) %>""")
+mod_graph = Model()
+mod_graph = _parse_element(data, mod_graph)
+eg = EvaluableGraph(mod_graph, False)
+eg.evaluate()
