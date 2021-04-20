@@ -27,7 +27,7 @@
             "id": "input_node"
           },
           "pointers": {
-            "base": "@meta:Model"
+            "base": "@meta:Node"
           },
           "sets": {
             "parameters": [
@@ -65,7 +65,7 @@
             "id": "processing_node"
           },
           "pointers": {
-            "base": "@meta:Model"
+            "base": "@meta:Node"
           },
           "sets": {
             "parameters": [
