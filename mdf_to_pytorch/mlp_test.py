@@ -10,8 +10,13 @@ model = models["mlp_classifier"]
 imgs = np.load("example_data/imgs.npy")
 labels = np.load("example_data/labels.npy")
 
+matches = 0
 for i in range(len(imgs)):
     img = torch.Tensor(imgs[i,:,:]).view(-1, 14*14)
     target = labels[i]
     prediction = model(img)
-    print(target, prediction)
+    match = target==int(prediction)
+    if match: matches+=1
+    print('Image %i: target: %s, prediction: %s, match: %s'%(i, target, prediction, match))
+
+print('Matches: %i/%i, accuracy: %s%'%(matches,len(imgs), (100.*matches)/len(imgs)))
