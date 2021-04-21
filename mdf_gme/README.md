@@ -20,7 +20,7 @@ node spec_to_gme.js path/to/MDF/spec.json
 
 Finally, import the JSON into WebGME just like the [examples](https://github.com/deepforge-dev/webgme-json-importer/tree/master/examples) (suffixed with "\_meta")!
 
-### Loading instances into WebGME
+### Loading instances to and from WebGME importable JSON and MDF
 ```
-node instance_to_gme.js path/to/MDF/instance.json
+node bin/instance_converter path/to/MDForGME/instance.json
 ```
