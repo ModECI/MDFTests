@@ -1,20 +1,12 @@
 import torch
 import torch.nn as nn
 
-def custom_padding(input_tensor):
-    batch, channels, x, y = input_tensor.shape
-    custom = torch.zeros((batch, channels, x + 1, y + 1))
-    height_shift = 0
-    width_shift = 1
-    height_indices = [idx + height_shift for idx in (0,x)]
-    width_indices = [idx + width_shift for idx in (0,y)]
-    custom[:,:,height_indices[0]:height_indices[1], width_indices[0]:width_indices[1]] = input_tensor[:, :, :, :]
-    return custom
-
 
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
+
+        self.asymmetric_pad = nn.ZeroPad2d((0,1,0,1))
         self.conv2d = nn.Conv2d(in_channels=5, out_channels=64, kernel_size=(5,5), padding=2, bias=True)
         self.prelu = nn.PReLU(init=0.0)
         self.averagepooling2d = nn.AvgPool2d((2, 2), stride=2, padding=0)
@@ -98,7 +90,7 @@ class Model(nn.Module):
         prelu_output3 = self.prelu3(conv2d_output3)
         conv2d_output4 = self.conv2d4(averagepooling2d_output)
         prelu_output4 = self.prelu4(conv2d_output4)
-        prelu_output4 = custom_padding(prelu_output4)
+        prelu_output4 = self.asymmetric_pad(prelu_output4)
         averagepooling2d_output2 = self.averagepooling2d2(prelu_output4)
         conv2d_output5 = self.conv2d5(averagepooling2d_output)
         prelu_output5 = self.prelu5(conv2d_output5)
@@ -114,7 +106,7 @@ class Model(nn.Module):
         conv2d_output11 = self.conv2d11(prelu_output8)
         prelu_output9 = self.prelu9(conv2d_output11)
         prelu_output10 = self.prelu10(conv2d_output8)
-        prelu_output10 = custom_padding(prelu_output10)
+        prelu_output10 = self.asymmetric_pad(prelu_output10)
         averagepooling2d_output3 = self.averagepooling2d3(prelu_output10)
         conv2d_output12 = self.conv2d12(concatenate_output)
         prelu_output11 = self.prelu11(conv2d_output12)
@@ -131,7 +123,7 @@ class Model(nn.Module):
         prelu_output16 = self.prelu16(conv2d_output16)
         conv2d_output17 = self.conv2d17(averagepooling2d_output4)
         prelu_output17 = self.prelu17(conv2d_output17)
-        prelu_output17 = custom_padding(prelu_output17)
+        prelu_output17 = self.asymmetric_pad(prelu_output17)
         averagepooling2d_output5 = self.averagepooling2d5(prelu_output17)
         conv2d_output18 = self.conv2d18(averagepooling2d_output4)
         prelu_output18 = self.prelu18(conv2d_output18)
@@ -144,7 +136,7 @@ class Model(nn.Module):
         prelu_output21 = self.prelu21(conv2d_output21)
         conv2d_output22 = self.conv2d22(concatenate_output3)
         prelu_output22 = self.prelu22(conv2d_output22)
-        prelu_output22 = custom_padding(prelu_output22)
+        prelu_output22 = self.asymmetric_pad(prelu_output22)
         averagepooling2d_output6 = self.averagepooling2d6(prelu_output22)
         conv2d_output23 = self.conv2d23(concatenate_output3)
         prelu_output23 = self.prelu23(conv2d_output23)
@@ -156,7 +148,7 @@ class Model(nn.Module):
         averagepooling2d_output7 = self.averagepooling2d7(concatenate_output4)
         conv2d_output26 = self.conv2d26(averagepooling2d_output7)
         prelu_output26 = self.prelu26(conv2d_output26)
-        prelu_output26 = custom_padding(prelu_output26)
+        prelu_output26 = self.asymmetric_pad(prelu_output26)
         averagepooling2d_output8 = self.averagepooling2d8(prelu_output26)
         conv2d_output27 = self.conv2d27(averagepooling2d_output7)
         prelu_output27 = self.prelu27(conv2d_output27)
@@ -189,5 +181,3 @@ if __name__=="__main__":
         print(model(galaxy_images_output, ebv_output))
         scripted_model = torch.jit.script(model)
         traced_model = torch.jit.trace(model, (galaxy_images_output, ebv_output))
-
-    #print(scripted_model==traced_model)
