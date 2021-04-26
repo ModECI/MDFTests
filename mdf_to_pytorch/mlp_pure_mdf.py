@@ -32,7 +32,7 @@ def get_model_graph():
     weight = weights['weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.weight']
     bias = weights['weights.mlp_classifier.graphs.mlp_classifier.nodes.mlp_input_layer.parameters.bias']
 
-    dummy_input = np.zeros((14*14))
+    dummy_input = np.zeros((1,14*14))
     #dummy_input = np.ones((14*14))
 
     input_node = Node(
@@ -140,7 +140,7 @@ def main():
     from neuromllite.utils import FORMAT_NUMPY, FORMAT_TENSORFLOW
 
     format = FORMAT_TENSORFLOW if "-tf" in sys.argv else FORMAT_NUMPY
-    eg = EvaluableGraph(mod_graph, verbose=True)
+    eg = EvaluableGraph(mod_graph, verbose=False)
     eg.evaluate(array_format=format)
 
     print('Finished evaluating graph using array format %s'%format)
