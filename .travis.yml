@@ -32,8 +32,8 @@ install:
   
   # Install PsyNeuLink
   - python -m pip install git+https://github.com/SheffieldML/GPy.git@devel
-  - git clone https://github.com/PrincetonUniversity/PsyNeuLink.git
-  - cd PsyNeuLink
+  - git clone https://github.com/PrincetonUniversity/PsyNeuLink.git pnl
+  - cd pnl
   - git checkout mdf  # specific branch of PsyNeuLink to use...
   - python setup.py install
   - cd ..
