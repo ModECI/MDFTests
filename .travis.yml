@@ -18,12 +18,25 @@ install:
   - python setup.py install
   - cd -
 
+
+  # Install NeuroMLlite
+  - git clone https://github.com/NeuroML/NeuroMLlite.git
+  - cd NeuroMLlite
+  - git checkout master  # specific branch of NeuroMLlite to use...
+  - python setup.py install
+  - cd ..
+  
   # Install pyNeuroML
   - pip install pyneuroml
   - pynml -h
-
-  # Install PsyNeuLink (also installs pytorch)
-  - pip install psyneulink
+  
+  # Install PsyNeuLink
+  - python -m pip install git+https://github.com/SheffieldML/GPy.git@devel
+  - git clone https://github.com/PrincetonUniversity/PsyNeuLink.git
+  - cd PsyNeuLink
+  - git checkout mdf  # specific branch of PsyNeuLink to use...
+  - python setup.py install
+  - cd ..
 
 
 
