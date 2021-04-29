@@ -15,13 +15,14 @@ def generate():
     ###   Build new network
 
     net = Network(id='ABCD')
-    net.notes = 'Example of simplified network'
+    net.notes = 'Example of a simplified network'
 
-    net.parameters = { 'A_initial': 0, 'A_slope': 2}
+    net.parameters = { 'A_initial': 0.1, 'A_slope': 2.2}
 
     cellInput = Cell(id='a_input',
                      lems_source_file='PNL.xml',
                      parameters={'variable':'A_initial'})
+
     net.cells.append(cellInput)
 
     cellA = Cell(id='a', lems_source_file='PNL.xml')
@@ -129,7 +130,7 @@ def generate():
                                       type='continuousProjection',
                                       weight=1,
                                       random_connectivity=RandomConnectivity(probability=1)))
-
+    
 
     new_file = net.to_json_file('%s.json'%net.id)
 

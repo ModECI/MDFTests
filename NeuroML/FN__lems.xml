@@ -44,12 +44,12 @@
     </Dynamics>
   </ComponentType>
   <ComponentType description="Ohmic synapse model whose conductance rises instantaneously by (_gbase * _weight) on receiving an event, and which decays exponentially to zero with time course _tauDecay" extends="baseSynapseDL" name="simpleExponentialSynapse">
-    <Parameter dimension="time" name="tauDecay"/>
-    <Parameter dimension="none" name="Gbase"/>
-    <Parameter dimension="none" name="erev"/>
+    <Parameter description="Time course of decay" dimension="time" name="tauDecay"/>
+    <Parameter description="Baseline conductance, generally the maximum conductance following a single spike" dimension="none" name="Gbase"/>
+    <Parameter description="Reversal potential of the synapse" dimension="none" name="erev"/>
     <EventPort direction="in" name="in"/>
     <Exposure dimension="none" name="G"/>
-    <Requirement dimension="none" name="V"/>
+    <Requirement description="The current may vary with the voltage exposed by the ComponentType on which this is placed" dimension="none" name="V"/>
     <Dynamics>
       <StateVariable dimension="none" exposure="G" name="G"/>
       <DerivedVariable dimension="none" exposure="I" name="I" value="G * (erev - V)"/>

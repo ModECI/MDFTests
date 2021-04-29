@@ -1,11 +1,11 @@
 {
     "ABCD": {
-        "version": "NeuroMLlite v0.3.0",
+        "version": "NeuroMLlite v0.3.2",
         "parameters": {
-            "A_initial": 0,
-            "A_slope": 2
+            "A_initial": 0.1,
+            "A_slope": 2.2
         },
-        "notes": "Example of simplified network",
+        "notes": "Example of a simplified network",
         "cells": {
             "a_input": {
                 "lems_source_file": "PNL.xml",

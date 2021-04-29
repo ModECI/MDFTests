@@ -24,9 +24,8 @@
     <Parameter dimension="none" name="variable"/>
     <Attachments name="synapses" type="basePointCurrentDL"/>
     <Dynamics>
-      <DerivedVariable dimension="none" exposure="INPUT" name="INPUT" value="variable"/>
       <DerivedVariable dimension="none" exposure="V" name="V" value="0"/>
-      <DerivedVariable dimension="none" exposure="OUTPUT" name="OUTPUT" value="INPUT"/>
+      <DerivedVariable dimension="none" exposure="OUTPUT" name="OUTPUT" value="variable"/>
       <OnCondition test="OUTPUT .lt. 0">
         <EventOut port="spike"/>
       </OnCondition>
@@ -95,7 +94,7 @@
       <DerivedVariable dimension="none" exposure="I" name="I" value="weight * SEC * rpeer"/>
     </Dynamics>
   </ComponentType>
-  <Component id="a_input" type="inputNode" variable="0"/>
+  <Component id="a_input" type="inputNode" variable="0.1"/>
   <Component id="a" intercept="2" slope="2" type="pnlLinearFunctionTM"/>
   <Component bias="0.0" gain="1.0" id="b" offset="0.0" type="pnlLogisticFunctionTM" x_0="0.0"/>
   <Component bias="0.0" id="c" offset="0.0" rate="1.0" scale="1.0" type="pnlExponentialFunctionTM"/>
