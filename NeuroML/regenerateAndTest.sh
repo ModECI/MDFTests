@@ -24,6 +24,9 @@ python ABCD.py -pnl
 ####  Generate MDF version of the network from NeuroMLlite definition
 python ABCD.py -mdf
 
+####  Generate graph from MDF version
+python -m modeci_mdf.export.graphviz ABCD.mdf.yaml 1 -noview
+
 ####  Generate a graph depicting the structure & *dynamics* of the network from the LEMS description
 pynml LEMS_SimABCD.xml -lems-graph
 
