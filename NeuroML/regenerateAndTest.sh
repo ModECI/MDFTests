@@ -27,6 +27,9 @@ python ABCD.py -mdf
 ####  Generate graph from MDF version
 python -m modeci_mdf.export.graphviz ABCD.mdf.yaml 1 -noview
 
+####  Test evaluating MDF version
+python -m modeci_mdf.simple_scheduler ABCD.mdf.json
+
 ####  Generate a graph depicting the structure & *dynamics* of the network from the LEMS description
 pynml LEMS_SimABCD.xml -lems-graph
 
@@ -49,6 +52,9 @@ pynml LEMS_SimFN.xml -lems-graph
 python FN.py -mdf
 
 ####  Generate graph from MDF version
-python -m modeci_mdf.export.graphviz FN.mdf.yaml 1 -noview
+python -m modeci_mdf.export.graphviz FN.mdf.yaml 3 -noview
+
+####  Test evaluating MDF version
+python -m modeci_mdf.simple_scheduler FN.mdf.json
 
 echo "Successfully ran all tests"

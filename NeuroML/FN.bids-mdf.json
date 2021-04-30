@@ -2,7 +2,7 @@
     "graphs": [
         {
             "name": "FN",
-            "notes": "Example of simplified network",
+            "notes": "FitzHugh Nagumo cell model - originally specified in NeuroML/LEMS",
             "controller": null,
             "nodes": {
                 "FNpop_0": {

@@ -3,7 +3,7 @@
         "format": "ModECI MDF v0.1",
         "graphs": {
             "FN": {
-                "notes": "FitzHugh Nagumo cell model",
+                "notes": "FitzHugh Nagumo cell model - originally specified in NeuroML/LEMS",
                 "nodes": {
                     "FNpop_0": {
                         "parameters": {

@@ -15,7 +15,7 @@ def generate():
     ###   Build new network
 
     net = Network(id='FN')
-    net.notes = 'FitzHugh Nagumo cell model'
+    net.notes = 'FitzHugh Nagumo cell model - originally specified in NeuroML/LEMS'
 
     net.parameters = { 'initial_w': 0.0,
                        'initial_v': -1,

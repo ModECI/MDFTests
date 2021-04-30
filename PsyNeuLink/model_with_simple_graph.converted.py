@@ -2,9 +2,9 @@ import psyneulink as pnl
 
 comp = pnl.Composition(name='comp')
 
-A = pnl.TransferMechanism(name='A', function=pnl.Linear(intercept=2.0, slope=5.0, default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
-B = pnl.TransferMechanism(name='B', function=pnl.Logistic(default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
-C = pnl.TransferMechanism(name='C', function=pnl.Exponential(default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+A = pnl.TransferMechanism(name='A', function=pnl.Linear(intercept=2.0, slope=5.0, default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+B = pnl.TransferMechanism(name='B', function=pnl.Logistic(default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+C = pnl.TransferMechanism(name='C', function=pnl.Exponential(default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
 
 comp.add_node(A)
 comp.add_node(B)

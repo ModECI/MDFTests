@@ -20,7 +20,7 @@
             "uncorrelated_activity": 0.0,
             "Iext": 0
         },
-        "notes": "FitzHugh Nagumo cell model",
+        "notes": "FitzHugh Nagumo cell model - originally specified in NeuroML/LEMS",
         "cells": {
             "fn": {
                 "lems_source_file": "FN_Definitions.xml",

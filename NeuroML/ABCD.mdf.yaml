@@ -44,7 +44,7 @@ ABCD:
                         V:
                             value: 0
                         OUTPUT:
-                            value: 1/(1+exp(-1*gain*(INPUT + bias - x_0)+offset))
+                            value: 1/(1+math.exp(-1*gain*(INPUT + bias - x_0)+offset))
                     notes: "Cell: [Cell (b), lems_source_file = PNL.xml] is defined\
                         \ in /Users/padraig/git/MDFTests/NeuroML/PNL.xml and in Lems\
                         \ is: Component, id: b, type: pnlLogisticFunctionTM,\n   parameters:\
@@ -62,7 +62,7 @@ ABCD:
                         V:
                             value: 0
                         OUTPUT:
-                            value: scale * exp((rate * INPUT) + bias) + offset
+                            value: scale * math.exp((rate * INPUT) + bias) + offset
                     notes: "Cell: [Cell (c), lems_source_file = PNL.xml] is defined\
                         \ in /Users/padraig/git/MDFTests/NeuroML/PNL.xml and in Lems\
                         \ is: Component, id: c, type: pnlExponentialFunctionTM,\n\
