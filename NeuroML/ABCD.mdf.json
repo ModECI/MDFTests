@@ -91,7 +91,12 @@
                                 "value": 0
                             }
                         },
-                        "notes": "Cell: [Cell (d), lems_source_file = PNL.xml] is defined in /Users/padraig/git/MDFTests/NeuroML/PNL.xml and in Lems is: Component, id: d, type: pnlSimpleIntegratorMechanism,\n   parameters: {'rate': '0.05', 'time_step_size': '0.1s'}\n   parent: None\n"
+                        "notes": "Cell: [Cell (d), lems_source_file = PNL.xml] is defined in /Users/padraig/git/MDFTests/NeuroML/PNL.xml and in Lems is: Component, id: d, type: pnlSimpleIntegratorMechanism,\n   parameters: {'rate': '0.05', 'time_step_size': '0.1s'}\n   parent: None\n",
+                        "states": {
+                            "OUTPUT": {
+                                "time_derivative": "(rate * INPUT) / time_step_size"
+                            }
+                        }
                     }
                 },
                 "edges": {

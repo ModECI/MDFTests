@@ -82,6 +82,9 @@ ABCD:
                         \ is: Component, id: d, type: pnlSimpleIntegratorMechanism,\n\
                         \   parameters: {'rate': '0.05', 'time_step_size': '0.1s'}\n\
                         \   parent: None\n"
+                    states:
+                        OUTPUT:
+                            time_derivative: (rate * INPUT) / time_step_size
             edges:
                 Edge A_0 to B_0:
                     name: Edge A_0 to B_0
