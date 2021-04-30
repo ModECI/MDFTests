@@ -22,7 +22,7 @@
         uncorrelated_activity = 0.0</notes>
     <include href="FN__lems.xml"/>
     <network id="FN">
-        <notes>FitzHugh Nagumo cell model</notes>
+        <notes>FitzHugh Nagumo cell model - originally specified in NeuroML/LEMS</notes>
         <property tag="recommended_dt_ms" value="0.05"/>
         <property tag="recommended_duration_ms" value="1.0"/>
         <population id="FNpop" component="fn" size="1" type="populationList">
