@@ -22,34 +22,28 @@
     <Attachments name="synapses" type="basePointCurrentDL"/>
     <EventPort description="Spike event" direction="out" name="spike"/>
     <Exposure dimension="none" name="W"/>
+    <Exposure dimension="none" name="OUTPUT"/>
+    <Exposure dimension="none" name="INPUT"/>
     <Dynamics>
       <StateVariable dimension="none" exposure="V" name="V"/>
       <StateVariable dimension="none" exposure="W" name="W"/>
-      <StateVariable dimension="none" name="spiking"/>
-      <DerivedVariable dimension="none" name="ISyn" reduce="add" select="synapses[*]/I"/>
-      <TimeDerivative value="(a_v * V^3 + (1 + threshold) * b_v * V^2 + (-1 * threshold) * c_v * V + d_v + e_v * W + f_v*Iext + ISyn) / (time_constant_v * MSEC)" variable="V"/>
+      <DerivedVariable dimension="none" exposure="INPUT" name="INPUT" reduce="add" select="synapses[*]/I"/>
+      <DerivedVariable dimension="none" exposure="OUTPUT" name="OUTPUT" value="V"/>
+      <TimeDerivative value="(a_v * V * V * V + (1 + threshold) * b_v * V * V + (-1 * threshold) * c_v * V + d_v + e_v * W + f_v*Iext + INPUT) / (time_constant_v * MSEC)" variable="V"/>
       <TimeDerivative value="(mode * a_w * V + b_w * W + c_w + (1 - mode) * uncorrelated_activity) / (time_constant_w * MSEC)" variable="W"/>
       <OnStart>
         <StateAssignment value="initial_v" variable="V"/>
         <StateAssignment value="initial_w" variable="W"/>
-        <StateAssignment value="0" variable="spiking"/>
       </OnStart>
-      <OnCondition test="V .gt. 0 .and. spiking .lt. 0.5">
-        <StateAssignment value="1" variable="spiking"/>
-        <EventOut port="spike"/>
-      </OnCondition>
-      <OnCondition test="V .lt. 0">
-        <StateAssignment value="0" variable="spiking"/>
-      </OnCondition>
     </Dynamics>
   </ComponentType>
   <ComponentType description="Ohmic synapse model whose conductance rises instantaneously by (_gbase * _weight) on receiving an event, and which decays exponentially to zero with time course _tauDecay" extends="baseSynapseDL" name="simpleExponentialSynapse">
-    <Parameter dimension="time" name="tauDecay"/>
-    <Parameter dimension="none" name="Gbase"/>
-    <Parameter dimension="none" name="erev"/>
+    <Parameter description="Time course of decay" dimension="time" name="tauDecay"/>
+    <Parameter description="Baseline conductance, generally the maximum conductance following a single spike" dimension="none" name="Gbase"/>
+    <Parameter description="Reversal potential of the synapse" dimension="none" name="erev"/>
     <EventPort direction="in" name="in"/>
     <Exposure dimension="none" name="G"/>
-    <Requirement dimension="none" name="V"/>
+    <Requirement description="The current may vary with the voltage exposed by the ComponentType on which this is placed" dimension="none" name="V"/>
     <Dynamics>
       <StateVariable dimension="none" exposure="G" name="G"/>
       <DerivedVariable dimension="none" exposure="I" name="I" value="G * (erev - V)"/>

@@ -9,13 +9,13 @@ import sys
 def generate():
 
     dt = 0.05
-    simtime = 100
+    simtime = 1
 
     ################################################################################
     ###   Build new network
 
     net = Network(id='FN')
-    net.notes = 'Example of simplified network'
+    net.notes = 'FitzHugh Nagumo cell model'
 
     net.parameters = { 'initial_w': 0.0,
                        'initial_v': -1,

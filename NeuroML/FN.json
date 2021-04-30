@@ -1,6 +1,6 @@
 {
     "FN": {
-        "version": "NeuroMLlite v0.3.0",
+        "version": "NeuroMLlite v0.3.2",
         "parameters": {
             "initial_w": 0.0,
             "initial_v": -1,
@@ -20,7 +20,7 @@
             "uncorrelated_activity": 0.0,
             "Iext": 0
         },
-        "notes": "Example of simplified network",
+        "notes": "FitzHugh Nagumo cell model",
         "cells": {
             "fn": {
                 "lems_source_file": "FN_Definitions.xml",

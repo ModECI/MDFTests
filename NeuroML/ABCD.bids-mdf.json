@@ -2,7 +2,7 @@
     "graphs": [
         {
             "name": "ABCD",
-            "notes": "Example of simplified network",
+            "notes": "Example of a simplified network",
             "controller": null,
             "nodes": {
                 "A_input_0": {
@@ -24,7 +24,7 @@
                                 "variable": {
                                     "type": "float",
                                     "source": "A_input_0.input_ports.variable",
-                                    "value": 0
+                                    "value": 0.1
                                 }
                             }
                         }

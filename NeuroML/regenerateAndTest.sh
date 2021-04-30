@@ -24,6 +24,9 @@ python ABCD.py -pnl
 ####  Generate MDF version of the network from NeuroMLlite definition
 python ABCD.py -mdf
 
+####  Generate graph from MDF version
+python -m modeci_mdf.export.graphviz ABCD.mdf.yaml 1 -noview
+
 ####  Generate a graph depicting the structure & *dynamics* of the network from the LEMS description
 pynml LEMS_SimABCD.xml -lems-graph
 
@@ -39,8 +42,13 @@ python FN.py -jnml
 ####  Generate PsyNeuLink version of the network from NeuroMLlite definition
 python FN.py -pnl
 
-
 ####  Generate a graph depicting the structure of the network from the LEMS description
 pynml LEMS_SimFN.xml -lems-graph
+
+####  Generate MDF version of the network from NeuroMLlite definition
+python FN.py -mdf
+
+####  Generate graph from MDF version
+python -m modeci_mdf.export.graphviz FN.mdf.yaml 1 -noview
 
 echo "Successfully ran all tests"
