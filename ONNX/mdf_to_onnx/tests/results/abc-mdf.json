@@ -1,0 +1,105 @@
+{
+    "ONNX Model": {
+        "graphs": [
+            {
+                "torch-jit-export": {
+                    "nodes": [
+                        {
+                            "Sin_0": {
+                                "input_ports": [
+                                    {
+                                        "input": {
+                                            "shape": "(2, 3)"
+                                        }
+                                    }
+                                ],
+                                "functions": [
+                                    {
+                                        "Sin_0": {
+                                            "function": "Sin"
+                                        }
+                                    }
+                                ],
+                                "output_ports": [
+                                    {
+                                        "1": {
+                                            "value": "Sin_0"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Sin_1": {
+                                "input_ports": [
+                                    {
+                                        "1": {
+                                            "shape": "(2, 3)"
+                                        }
+                                    }
+                                ],
+                                "functions": [
+                                    {
+                                        "Sin_1": {
+                                            "function": "Sin"
+                                        }
+                                    }
+                                ],
+                                "output_ports": [
+                                    {
+                                        "2": {
+                                            "value": "Sin_1"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Cos_2": {
+                                "input_ports": [
+                                    {
+                                        "2": {
+                                            "shape": "(2, 3)"
+                                        }
+                                    }
+                                ],
+                                "functions": [
+                                    {
+                                        "Cos_2": {
+                                            "function": "Cos"
+                                        }
+                                    }
+                                ],
+                                "output_ports": [
+                                    {
+                                        "3": {
+                                            "value": "Cos_2"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "edges": [
+                        {
+                            "Sin_0.1_Sin_1.1": {
+                                "sender": "Sin_0",
+                                "receiver": "Sin_1",
+                                "sender_port": "1",
+                                "receiver_port": "1"
+                            }
+                        },
+                        {
+                            "Sin_1.2_Cos_2.2": {
+                                "sender": "Sin_1",
+                                "receiver": "Cos_2",
+                                "sender_port": "2",
+                                "receiver_port": "2"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
