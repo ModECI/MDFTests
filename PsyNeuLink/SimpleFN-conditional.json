@@ -1,6 +1,58 @@
 {
     "graphs": [
         {
+            "conditions": {
+                "node_specific": {
+                    "fn": {
+                        "args": [],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "Always"
+                    },
+                    "im": {
+                        "args": [
+                            {
+                                "args": [
+                                    "fn",
+                                    20.0
+                                ],
+                                "function": null,
+                                "kwargs": {},
+                                "type": "EveryNCalls"
+                            },
+                            {
+                                "args": [
+                                    "fn",
+                                    1600.0
+                                ],
+                                "function": null,
+                                "kwargs": {},
+                                "type": "AfterNCalls"
+                            }
+                        ],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "All"
+                    }
+                },
+                "termination": {
+                    "run": {
+                        "args": [],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "Never"
+                    },
+                    "trial": {
+                        "args": [
+                            "fn",
+                            2000
+                        ],
+                        "function": null,
+                        "kwargs": {},
+                        "type": "AfterNCalls"
+                    }
+                }
+            },
             "controller": null,
             "edges": {
                 "MappingProjection from fn[OutputPort-0] to im[InputPort-0]": {
@@ -284,7 +336,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-10",
+                                    "name": "Linear Function-5",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -336,7 +388,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-8",
+                                    "name": "Linear Function-9",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -388,7 +440,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-1",
+                                    "name": "Linear Function-14",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -440,7 +492,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-17",
+                                    "name": "Linear Function-6",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -544,7 +596,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-4",
+                                    "name": "Linear Function-11",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -596,7 +648,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-5",
+                                    "name": "Linear Function-12",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -648,7 +700,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-14",
+                                    "name": "Linear Function-16",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -700,7 +752,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-2",
+                                    "name": "Linear Function-17",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -804,7 +856,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-13",
+                                    "name": "Linear Function-4",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -856,7 +908,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-16",
+                                    "name": "Linear Function-1",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -908,7 +960,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-12",
+                                    "name": "Linear Function-15",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -960,7 +1012,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-6",
+                                    "name": "Linear Function-10",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1012,7 +1064,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-9",
+                                    "name": "Linear Function-13",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1064,7 +1116,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-11",
+                                    "name": "Linear Function-2",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1116,7 +1168,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-15",
+                                    "name": "Linear Function-8",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1468,7 +1520,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-31",
+                                    "name": "Linear Function-32",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1572,7 +1624,7 @@
                                         "num_executions_before_finished": 0,
                                         "slope": 1.0
                                     },
-                                    "name": "Linear Function-32",
+                                    "name": "Linear Function-31",
                                     "type": {
                                         "generic": "Linear"
                                     }
@@ -1706,58 +1758,6 @@
                 "num_executions": "Time(life=0, pass_=0, run=0, time_step=0, trial=0)",
                 "num_executions_before_finished": 0,
                 "retain_old_simulation_data": false
-            },
-            "conditions": {
-                "node_specific": {
-                    "fn": {
-                        "args": [],
-                        "function": null,
-                        "kwargs": {},
-                        "type": "Always"
-                    },
-                    "im": {
-                        "args": [
-                            {
-                                "args": [
-                                    "fn",
-                                    80.0
-                                ],
-                                "function": null,
-                                "kwargs": {},
-                                "type": "EveryNCalls"
-                            },
-                            {
-                                "args": [
-                                    "fn",
-                                    1600.0
-                                ],
-                                "function": null,
-                                "kwargs": {},
-                                "type": "AfterNCalls"
-                            }
-                        ],
-                        "function": null,
-                        "kwargs": {},
-                        "type": "All"
-                    }
-                },
-                "termination": {
-                    "run": {
-                        "args": [],
-                        "function": null,
-                        "kwargs": {},
-                        "type": "Never"
-                    },
-                    "trial": {
-                        "args": [
-                            "fn",
-                            2000
-                        ],
-                        "function": null,
-                        "kwargs": {},
-                        "type": "AfterNCalls"
-                    }
-                }
             },
             "type": {
                 "PNL": "Composition",

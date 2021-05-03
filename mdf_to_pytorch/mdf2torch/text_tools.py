@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import numpy as np
+import sys
 from collections import defaultdict
 from inspect import getmembers, signature, getsource
 
@@ -8,17 +10,16 @@ from .function import mod_torch_builtins as torch_builtins
 from .function.alias import nn_module_map, nn_module_argument_map
 from .mdf2torch_errors import TorchNameError, TorchArgumentError
 
-def generate_constructor_call(function, params):
+def generate_constructor_call(function_info, params):
     """
     Generate the constructor for a given torch module
     """
 
     # Map the name of the function to torch.nn or another lib if specified
-    function_name = next(iter(function.keys()))
-    function_type = function[function_name]["function"]  # Only handle one at a time
-    function_dict = function[function_name]
 
-    print(function_type)
+
+    function_name, function_dict = function_info
+    function_type = function_dict["function"]
 
     # Check if function name maps to a nn.Module module
     if function_type in nn_module_map:
@@ -124,13 +125,14 @@ def generate_initializer_call(func_class, params, idx=False):
 
     for param in settable_params:
         if param in params:
+
             param_text = "nn.Parameter(torch.Tensor({}))".format(params[param])
+
             if not idx:
-
                 text += "\n\t\tself.function.{} = {}".format(param, param_text)
-
             else:
                 text += "\n\t\tself.function_list[-1].{} = {}".format(param, param_text)
+
     return text
 
 def get_instance_params(funcname):
@@ -199,8 +201,8 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
     # Single function node
     if len(functions) == 1:
 
-        function_name = next(iter(functions[0].keys()))
-        function_type = functions[0][function_name]["function"]
+        function_name = list(functions.keys())[0]
+        function_type = functions[function_name]["function"]
 
         # Place in existing definition
         if function_type in udf.__all__ or function_type in torch_builtins.__all__:
@@ -224,7 +226,7 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
 
         # Build module
         else:
-            constructor_call, func_class = generate_constructor_call(functions[0], constructor_parameters)
+            constructor_call, func_class = generate_constructor_call((function_name, functions[function_name]), constructor_parameters)
             declaration_text += "\n\t\tself.function = {}".format(constructor_call)
 
             initializer_call = generate_initializer_call(func_class, parameters, idx=False)
@@ -235,11 +237,33 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
 
     # Multi function node
     else:
+
+        from toposort import toposort
+
+        # Need to put function calls in proper order
+        function_keys = set([key for key in functions.keys()])
+
+        function_graph = {}
+
+
+        for func_name, func_dict in functions.items():
+            if "args" in func_dict:
+                depends_on = func_dict["args"]["variable0"]
+
+                if depends_on in function_keys:
+
+                    function_graph[func_name] = {depends_on}
+
+
+        function_graph = toposort(function_graph)
+        function_names = [list(e)[0] for e in list(function_graph)]
+
         declaration_text += "\n\t\tself.function_list = []"
-        print(functions)
-        for function in functions:
-            function_name = next(iter(function.keys()))
-            function_type = function[function_name]["function"]
+
+
+        for function_name in function_names:
+            function = functions[function_name]
+            function_type = functions[function_name]["function"]
 
             # Function is predefined
             if (function_type in udf.__all__ or function_type in torch_builtins.__all__):
@@ -261,11 +285,12 @@ def get_module_declaration_text(name, node_dict, dependency_graph, declared_modu
                 declaration_text += "\n\t\tself.function_list.append({}())".format(function_type)
 
             else:
-                constructor_call, func_class = generate_constructor_call(function, constructor_parameters)
+                constructor_call, func_class = generate_constructor_call((function_name, function), constructor_parameters)
                 declaration_text += "\n\t\tself.function_list.append({})".format(constructor_call)
 
                 initializer_call = generate_initializer_call(func_class, parameters, idx=True)
                 declaration_text += "\n{}".format(initializer_call)
+
 
         declaration_text += "\n\t\tself.function = nn.Sequential(*self.function_list)"
         forward_call, forward_signature = generate_module_forward_call(name, dependency_graph)
@@ -437,7 +462,7 @@ def generate_main_forward(ordered_dependency_graph, module_signatures, condition
     main_forward+="\nmodel = Model()"
     return main_forward
 
-def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=None):
+def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=None, weights=None):
     """
     Create and assemble following components for a complete script:
 
@@ -458,6 +483,18 @@ def build_script(nodes, dependency_graph, ordered_dependency_graph, conditions=N
     module_signatures = {}
     declared_module_types = None
     for node_name, node_dict in nodes.items():
+
+        # Check here if we have a parameter represented by a larger weight matrix and if so, expand
+        if "parameters" in node_dict:
+            kv_pairs = [(k,v) for k,v in node_dict["parameters"].items()]
+
+            for k,v in kv_pairs:
+                if v.startswith("weights"):
+                    # Load and set
+                    np.set_printoptions(threshold=sys.maxsize)
+                    node_dict["parameters"][k] = np.array2string(weights[v], separator=", ")
+
+
         declaration_text, module_signature, declared_module_types = \
                                         get_module_declaration_text(node_name,
                                                                     node_dict,

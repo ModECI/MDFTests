@@ -2,10 +2,10 @@ import psyneulink as pnl
 
 ABCD = pnl.Composition(name='ABCD')
 
-A = pnl.TransferMechanism(name='A', function=pnl.Linear(intercept=2.0, slope=2.0, default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
-B = pnl.TransferMechanism(name='B', function=pnl.Logistic(default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
-C = pnl.TransferMechanism(name='C', function=pnl.Exponential(default_variable=[[0]]), initial_value=[[0]], termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
-D = pnl.IntegratorMechanism(name='D', function=pnl.SimpleIntegrator(rate=0.05, default_variable=[[0]]))
+A = pnl.TransferMechanism(name='A', function=pnl.Linear(intercept=2.0, slope=2.0, default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+B = pnl.TransferMechanism(name='B', function=pnl.Logistic(default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+C = pnl.TransferMechanism(name='C', function=pnl.Exponential(default_variable=[[0]]), termination_measure=pnl.Distance(metric=pnl.MAX_ABS_DIFF, default_variable=[[[0]], [[0]]]))
+D = pnl.IntegratorMechanism(name='D', function=pnl.SimpleIntegrator(initializer=[[0]], rate=0.05, default_variable=[[0]]))
 
 ABCD.add_node(A)
 ABCD.add_node(B)
@@ -20,7 +20,7 @@ ABCD.add_projection(projection=pnl.MappingProjection(name='MappingProjection fro
 ABCD.scheduler.add_condition(A, pnl.Always())
 ABCD.scheduler.add_condition(B, pnl.EveryNCalls(A, 1))
 ABCD.scheduler.add_condition(C, pnl.EveryNCalls(A, 1))
-ABCD.scheduler.add_condition(D, pnl.All(pnl.EveryNCalls(C, 1), pnl.EveryNCalls(B, 1)))
+ABCD.scheduler.add_condition(D, pnl.All(pnl.EveryNCalls(B, 1), pnl.EveryNCalls(C, 1)))
 
 ABCD.scheduler.termination_conds = {pnl.TimeScale.RUN: pnl.Never(), pnl.TimeScale.TRIAL: pnl.AllHaveRun()}
 comp.show_graph()
