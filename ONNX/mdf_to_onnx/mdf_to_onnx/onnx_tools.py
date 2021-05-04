@@ -1,5 +1,5 @@
 import onnx
-from onnx import helper
+from onnx import helper, shape_inference
 from onnx import AttributeProto, TensorProto, GraphProto
 
 from ast import literal_eval
@@ -34,15 +34,6 @@ def generate_onnx_graph(graph, sorted_nodes):
         defined_input_ports = [e.receiver_port for e in in_edges]
         graph_inputs = [p for p in node.input_ports.values() if p.id not in defined_input_ports]
         return graph_inputs
-
-    def create_input_value_info(node, input_ports):
-        onnx_value_infos = []
-        for output_port in node.output_ports.values():
-            value_info = helper.make_tensor_value_info(node.id + '_' + output_port.id,
-                                                       TensorProto.FLOAT,
-                                                       (1,)) # TODO get shape
-            onnx_value_infos.append(value_info)
-        return onnx_value_infos
 
     def create_onnx_node(node, in_edges):
         # get function name
@@ -79,9 +70,10 @@ def generate_onnx_graph(graph, sorted_nodes):
     def create_output_value_info(node, output_ports):
         onnx_value_infos = []
         for output_port in output_ports:
-            value_info = helper.make_tensor_value_info(node.id + '_' + output_port.id,
-                                                       TensorProto.FLOAT,
-                                                       (1,))  # TODO get shape
+            #value_info = helper.make_tensor_value_info(node.id + '_' + output_port.id,
+            #                                           TensorProto.FLOAT,
+            #                                           (1,))  # TODO get shape
+            value_info = helper.make_empty_tensor_value_info(node.id + '_' + output_port.id)
             onnx_value_infos.append(value_info)
         return onnx_value_infos
 
@@ -123,6 +115,7 @@ def generate_onnx_model(model, sorted_nodes):
     for graph, nodes in zip(model.graphs.values(), sorted_nodes):
         onnx_graph = generate_onnx_graph(graph, nodes)
         onnx_model = helper.make_model(onnx_graph)
+        onnx_model = shape_inference.infer_shapes(onnx_model)
         onnx.checker.check_model(onnx_model)
         onnx_models.append(onnx_model)
     return onnx_models
