@@ -12,6 +12,10 @@ function createMetaNode(name, data) {
         },
     };
 
+    if (name.toLowerCase().includes('port')) {
+        nodeDef.registry = {isPort: true};
+    }
+
     return merge(nodeDef, parameters, childrenMeta);
 }
 
