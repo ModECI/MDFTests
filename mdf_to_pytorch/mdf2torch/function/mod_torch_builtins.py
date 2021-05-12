@@ -5,11 +5,22 @@ for easier automatic construction of script
 import torch.nn
 
 class argmax(torch.nn.Module):
-    def __init__(self):
-        super(argmax, self).__init__()
-    def forward(self, x):
-        return torch.argmax(x)
+        def __init__(self):
+                super(argmax, self).__init__()
+        def forward(self, A):
+                return torch.argmax(A)
 
+class matmul(torch.nn.Module):
+        def __init__(self):
+                super(matmul, self).__init__()
+        def forward(self, A, B):
+                return torch.matmul(A, B.T)
+
+class add(torch.nn.Module):
+        def __init__(self):
+                super(add, self).__init__()
+        def forward(self, A, B):
+                return torch.add(A, B)
 
 # fns = [
 # 'zeros','zeros_like','ones','ones_like','eye','empty','cat','chunk',
@@ -35,4 +46,4 @@ class argmax(torch.nn.Module):
 # 'isreal','kthvalue','le','less_equal','lt','less','maximum','minimum','not_equal','sort','topk']
 
 
-__all__ = ["argmax"]
+__all__ = ["argmax", "matmul", "add"]
