@@ -25,7 +25,7 @@ python ABCD.py -pnl
 python ABCD.py -mdf
 
 ####  Generate graph from MDF version
-python -m modeci_mdf.export.graphviz ABCD.mdf.yaml 1 -noview
+python -m modeci_mdf.interfaces.graphviz.importer ABCD.mdf.yaml 1 -noview
 
 ####  Test evaluating MDF version
 python -m modeci_mdf.scheduler ABCD.mdf.json
@@ -52,7 +52,7 @@ pynml LEMS_SimFN.xml -lems-graph
 python FN.py -mdf
 
 ####  Generate graph from MDF version
-python -m modeci_mdf.export.graphviz FN.mdf.yaml 3 -noview
+python -m modeci_mdf.interfaces.graphviz.importer FN.mdf.yaml 3 -noview
 
 ####  Test evaluating MDF version
 python -m modeci_mdf.scheduler FN.mdf.json
